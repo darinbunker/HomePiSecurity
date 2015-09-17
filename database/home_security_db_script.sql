@@ -104,11 +104,6 @@ insert into system_state (`app_module`,`active`,`active_override`,`override_aler
 
 insert into users (`user_name`,`password`,`sms_number`,`active`,`send_email`,`send_sms`, `deleted`, `create_date`,`last_change_date`) values ('admin@admin.io', 'oMK+aYh5Hp/KdIWISbljvA2Oz68VUwsCKl/X5HUhSto=$L+kxRounHxTKKn4woxh/vQ8xNBtwHq5tgYqfYdhfsYg=', '+8015551234', 1, 0, 0, 0, now(), now());
 
-insert into security_modules (`app_module_id`,`module_name`,`pin_id`,`message`,`active`,`last_change_date`) values (1, 'back_door', 25, 'Security Event - Back door has been accessed', 1, now());
-insert into security_modules (`app_module_id`,`module_name`,`pin_id`,`message`,`active`,`last_change_date`) values (1, 'front_door', 17, 'Security Event - Front door has been accessed', 1, now());
-insert into security_modules (`app_module_id`,`module_name`,`pin_id`,`message`,`active`,`last_change_date`) values (1, 'house_garage', 27, 'Security Event - Door from house to garage has been accessed', 1, now());
-insert into security_modules (`app_module_id`,`module_name`,`pin_id`,`message`,`active`,`last_change_date`) values (1, 'garage_back_door', 24, 'Security Event - Door from garage to backyard has been accessed', 1, now());
-
 insert into security_schedules (`app_module_id`,`start_day`,`start_hour`,`start_minute`,`end_day`,`end_hour`,`end_minute`,`alert_rule_id`,`active`, `deleted`, `create_date`,`last_change_date`) value (1, 0, 23, 0, 2, 6, 0, 1, 1, 0, now(), now());
 insert into security_schedules (`app_module_id`,`start_day`,`start_hour`,`start_minute`,`end_day`,`end_hour`,`end_minute`,`alert_rule_id`,`active`, `deleted`,`create_date`,`last_change_date`) value (1, 1, 23, 0, 3, 6, 0, 1, 1, 0, now(), now());
 insert into security_schedules (`app_module_id`,`start_day`,`start_hour`,`start_minute`,`end_day`,`end_hour`,`end_minute`,`alert_rule_id`,`active`, `deleted`,`create_date`,`last_change_date`) value (1, 2, 23, 0, 4, 6, 0, 1, 1, 0, now(), now());
@@ -116,11 +111,6 @@ insert into security_schedules (`app_module_id`,`start_day`,`start_hour`,`start_
 insert into security_schedules (`app_module_id`,`start_day`,`start_hour`,`start_minute`,`end_day`,`end_hour`,`end_minute`,`alert_rule_id`,`active`, `deleted`,`create_date`,`last_change_date`) value (1, 4, 23, 0, 6, 6, 0, 1, 1, 0, now(), now());
 insert into security_schedules (`app_module_id`,`start_day`,`start_hour`,`start_minute`,`end_day`,`end_hour`,`end_minute`,`alert_rule_id`,`active`, `deleted`,`create_date`,`last_change_date`) value (1, 5, 23, 0, 7, 6, 0, 1, 1, 0, now(), now());
 insert into security_schedules (`app_module_id`,`start_day`,`start_hour`,`start_minute`,`end_day`,`end_hour`,`end_minute`,`alert_rule_id`,`active`, `deleted`,`create_date`,`last_change_date`) value (1, 6, 23, 0, 1, 6, 0, 1, 1, 0, now(), now());
-
-insert into current_state (`pin_id`,`state`,`last_change_date`) values (17, 0, now());
-insert into current_state (`pin_id`,`state`,`last_change_date`) values (24, 0, now());
-insert into current_state (`pin_id`,`state`,`last_change_date`) values (25, 0, now());
-insert into current_state (`pin_id`,`state`,`last_change_date`) values (27, 0, now());
 
 insert into alert_rules (`rule_name`,`send_email`,`send_sms`,`send_siren`,`alert_start`,`alert_end`,`active`,`last_change_date`) values ('Full Send Alerts', 1, 1, 1, 1, 1, 1, now());
 insert into alert_rules (`rule_name`,`send_email`,`send_sms`,`send_siren`,`alert_start`,`alert_end`,`active`,`last_change_date`) values ('Email and SMS Alerts', 1, 1, 0, 1, 1, 1, now());
