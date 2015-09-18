@@ -117,12 +117,12 @@ The installation process will walk through installing the pre-requisites, config
         *enter password
     * Set the database context once you have the mySQL session:
       * Execute: `use HomeSecuritySystem;`
-    * Execute a query for each door or window
+    * Execute a query for each door or window (You need to replace values with "[]")
       * `insert into security_modules (app_module_id, module_name, pin_id, message, active, last_change_date) Values (1, "[Enter Name]", [Enter Pin ID], "[add message to send when triggered]", 1, now());`
         * Example: `insert into security_modules (app_module_id, module_name, pin_id, message, active, last_change_date) Values (1, "Front Door", 17, "Someone has opened the front door", 1, now());`
 1. Configure system users and security schedules
   * A default user account has been added to the system.  Since the password is already hashed you need to will need to update the existing user.
-    * Execute this command at the mysql session:
+    * Execute this command at the mysql session (You need to replace your email and sms_number):
       * `update users set user_name = “your_email@mail.com", sms_number = "+8015551234", send_email = 1, send_sms = 1 where id = 1;`
 1. Start the Home Security Engine
   * Execute: `sudo python home_armed.py`
