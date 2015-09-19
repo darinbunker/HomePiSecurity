@@ -71,6 +71,10 @@ The installation process will walk through installing the pre-requisites, config
       * Execute: `python  --version`
   * Python-MySQL
     * Execute: `sudo apt-get install python-mysqldb`
+  * Twilio-Python
+    * Execute: `sudo apt-get install python-setuptools`
+    * Execute: `sudo easy_install pip`
+    * Execute: `sudo pip install twilio`
 1. Get the HomePiSecurity Code
   * Create the directory on the RaspberryPi
   * Commands to execute:
@@ -88,7 +92,7 @@ The installation process will walk through installing the pre-requisites, config
   * To use SMS you will need to create an account from Twilio and get the following:
     * Account_SID
     * Auth_Token
-    * Twilio_number (the configuration number must have a “+” in front of it) 
+    * Twilio_number (the configuration number must have a “+” in front of it.  You also need to make sure the numbers that are sent to twilio are in this exact format: +18015551234 - without the "+" or the "1" in front you will get errors.) 
   * To use Email you will need to get the following information from your email provider (Hint: since you will need to hardcode the password in the settings file, it might be a good idea to create a new email account so that it doesn’t expose your full email.  This account is just for sending…not receiving.
     * EMAIL_SMTP
     * EMAIL_SEND_ACCT
