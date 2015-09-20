@@ -10,6 +10,8 @@ The installation process will walk through installing the pre-requisites, config
 * MySQL - version 5.5
 * Python 2.7.3
 * python-mysqldb (1.2.3-2)
+* Apache - Apache/2.2.22 (Debian)
+* Java 1.8
 
 ## Detail Steps
 1. Raspberry Pi Configuration
