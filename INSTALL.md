@@ -109,7 +109,7 @@ The installation process will walk through installing the pre-requisites, config
     * Each sensor requires two wires, black and red (or something similar)
     * All of the black wires from each door or window are connected together
     * Connect red wire to an individual GPIO pin
-    * YouTube video on how to set it up: YouTube video on how to set it up: https://youtu.be/Rc2NDygT4Ms
+    * YouTube video on how to set it up: https://youtu.be/Rc2NDygT4Ms
   * Second, determine which pins are assigned to which doors or windows
     * Execute the “display_pin_status.py” file to determine which GPIO pins are associated to door or window
       * `sudo python /apps/HomePiSecurity/engine/display_pin_status.py`
