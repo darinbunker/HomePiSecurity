@@ -117,14 +117,9 @@ The installation process will walk through installing the pre-requisites, config
       * Run the display_pin_status.py file to get a base of which pins have which status
     * Open a door and re-run display_pin_status.py
   * Third, update the database with the GPIO pin details
-    * Log into MySQL
-      * Execute: `mysql -u root -p`
-        *enter password
-    * Set the database context once you have the mySQL session:
-      * Execute: `use HomeSecuritySystem;`
-    * Execute a query for each door or window (You need to replace values with "[]")
-      * `insert into security_modules (app_module_id, module_name, pin_id, message, active, last_change_date) Values (1, "[Enter Name]", [Enter Pin ID], "[add message to send when triggered]", 1, now());`
-        * Example: `insert into security_modules (app_module_id, module_name, pin_id, message, active, last_change_date) Values (1, "Front Door", 17, "Someone has opened the front door", 1, now());`
+    * For each GPIO pin, run the following to insert into the database:
+      * Execute: `sudo python /apps/HomePiSecurity/engine/add_module.py`
+        * Follow the prompts of the script to provide the details needed to insert into the database
 1. Configure system users and security schedules
   * A default user account has been added to the system.  Since the password is already hashed you need to will need to update the existing user.
     * Execute this command at the mysql session (You need to replace your email and sms_number):
