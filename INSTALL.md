@@ -75,6 +75,11 @@ The installation process will walk through installing the pre-requisites, config
     * Execute: `sudo apt-get install python-setuptools`
     * Execute: `sudo easy_install pip`
     * Execute: `sudo pip install twilio`
+  * Apache Web Server
+    * Execute: `sudo apt-get install apache2 -y`
+  * Java
+    * Java is already installed on the latest version of Raspberry Pi
+      * You can check the Java version by using this command: `java -version`
 1. Get the HomePiSecurity Code
   * Create the directory on the RaspberryPi
   * Commands to execute:
