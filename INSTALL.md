@@ -39,8 +39,8 @@ The installation process will walk through installing the pre-requisites, config
     * Reboot
     * Login with the username “pi” and the password of “raspberry"
       * You should change this password
-    * Setup Wifi
-      * update `/etc/network/interfaces/`
+    * Setup Wifi (this is optional if you are using a wired connection to the Raspberry Pi)
+      * update `/etc/network/interfaces`
         * Example:
           * auto lo <br>
             iface lo inet loopback <br><br>
@@ -60,28 +60,6 @@ The installation process will walk through installing the pre-requisites, config
   * Connect via SSH from a different computer
     * Execute: `ssh pi@10.0.0.100`
       * use the password for the pi user
-1. Install the Prerequisites on the RaspberryPi
-  * System Update:
-    * Execute: `sudo apt-get update`
-    * Then Execute: `sudo apt-get upgrade`
-  * MySQL
-    * Execute: `sudo apt-get install mysql-server`
-      * set the sa password (Ex. "TheMySQLPass!”)
-  * Python
-    * Python should already be installed on the Raspbian images.
-    * You can check the Python version by executing the following command:
-      * Execute: `python  --version`
-  * Python-MySQL
-    * Execute: `sudo apt-get install python-mysqldb`
-  * Twilio-Python
-    * Execute: `sudo apt-get install python-setuptools`
-    * Execute: `sudo easy_install pip`
-    * Execute: `sudo pip install twilio`
-  * Apache Web Server
-    * Execute: `sudo apt-get install apache2 -y`
-  * Java
-    * Java is already installed on the latest version of Raspberry Pi
-      * You can check the Java version by using this command: `java -version`
 1. Get the HomePiSecurity Code
   * Create the directory on the RaspberryPi
   * Commands to execute:
@@ -91,10 +69,10 @@ The installation process will walk through installing the pre-requisites, config
   * Get code from Git
     * The following commands will download the HomePiSecurity code from GitHub
     * Execute: `sudo git clone https://github.com/darinbunker/HomePiSecurity.git`
-1. Install Database
-  * Run the following commands to install the datbase for the Home Security System
-    * `mysql -u root -p < /apps/HomePiSecurity/database/home_security_db_script.sql`
-      * enter password as set above: "TheMySQLPass!”
+1. Execute the install script
+  * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh`
+    * Optionally, you can provide a password to be used for the MySQL installation
+      * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword`
 1. Obtain settings values:
   * To use SMS you will need to create an account from Twilio and get the following:
     * Account_SID
@@ -129,13 +107,10 @@ The installation process will walk through installing the pre-requisites, config
         * Follow the prompts of the script to provide the details needed to insert into the database
 1. Configure system users and security schedules
   * A default user account has been added to the system.  Since the password is already hashed you need to will need to update the existing user.
-    * Execute this command at the mysql session (You need to replace your email and sms_number):
-      * `update users set user_name = “your_email@mail.com", sms_number = "+8015551234", send_email = 1, send_sms = 1 where id = 1;`
-1. Start the Home Security Engine
-  * Execute: `sudo python home_armed.py`
-1. Create Security System Service
-  * First we need to copy the system script to the init directory
-    * Execute: `sudo cp /apps/HomePiSecurity/engine/armed-engine.sh /etc/init.d/armed-engine.sh`
+    * Execute this command to update the default admin account (You need to replace your email and sms_number):
+      * `sudo python /apps/HomePiSecurity/engine/update_admin.py`
+        * Follow the prompts to complete the update
+        * The default password for the admin user is 123456.
 1. Start Security System Service
   * Start the System
     * Execute: `sudo sh /etc/init.d/armed-engine.sh start`
