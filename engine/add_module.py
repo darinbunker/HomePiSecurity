@@ -62,7 +62,7 @@ def insertModule(module_id, pin_id, pin_name, pin_message):
 			returnStatus = 1
 			
 	except Exception as e:
-		logMessage("method: insertEventLogEntry - Error occurred: " + str(e.__doc__) + ": " + str(e.message) + " - SQL: " + str(sql))
+		logMessage("Error occurred: " + str(e.__doc__) + ": " + str(e.message) + " - SQL: " + str(sql))
 
 	return returnStatus
 
