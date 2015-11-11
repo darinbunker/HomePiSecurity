@@ -64,7 +64,7 @@ sudo chmod 600 /etc/apache2/ssl/homepisecurity.key
 sudo cp /etc/apache2/sites-enabled/default-ssl /etc/apache2/sites-enabled/default-ssl-backup
 
 ## Update default-ssl file to point to new certificate file
-sudo sed -i "s:SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem:SSLCertificateFile /etc/apache2/ssl/homepisecurity.pem:g" /etc/apache2/sites-enabled/default-ssl
+sudo sed -i "s:SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem:SSLCertificateFile /etc/apache2/ssl/homepisecurity.pem:g" /etc/apache2/sites-enabled/default-ssl
 sudo sed -i "s:SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key:SSLCertificateKeyFile /etc/apache2/ssl/homepisecurity.key:g" /etc/apache2/sites-enabled/default-ssl
 
 # We have to update the following two lines

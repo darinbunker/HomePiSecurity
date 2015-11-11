@@ -37,7 +37,7 @@ The installation process will walk through installing the pre-requisites, config
           * Hostname - Give new name: “HomePiSecurity"
           * SSH - This is very helpful to work on the pi from a different computer
     * Reboot
-    * Login with the username “pi” and the password of “raspberry"
+    * Login with the username “pi” and the password of “raspberry" (unless you change the password above)
       * You should change this password
     * Setup Wifi (this is optional if you are using a wired connection to the Raspberry Pi)
       * update `/etc/network/interfaces`
@@ -71,8 +71,9 @@ The installation process will walk through installing the pre-requisites, config
     * Execute: `sudo git clone https://github.com/darinbunker/HomePiSecurity.git`
 1. Execute the install script
   * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh`
-    * Optionally, you can provide a password to be used for the MySQL installation
+    * Optionally, you can provide a unique password to be used for the MySQL installation (default password is "TheMySQLPass!")
       * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword`
+    * Approximate install time is between 20-30 minutes
 1. Obtain settings values:
   * To use SMS you will need to create an account from Twilio and get the following:
     * Account_SID

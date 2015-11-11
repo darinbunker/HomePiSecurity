@@ -57,3 +57,6 @@ fail_if_error $?
 # Generate the cert (good for 10 years)
 openssl x509 -req -days 3650 -in $DOMAIN.csr -signkey $DOMAIN.key -out $DOMAIN.crt
 fail_if_error $?
+
+# Generate the keystore for Tomcat
+openssl pkcs12 -export -in $DOMAIN.crt -inkey $DOMAIN.key -out $DOMAIN.p12 -name pihomesecurity -CAfile $DOMAIN.crt -caname root -chain
