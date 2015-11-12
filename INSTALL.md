@@ -69,6 +69,11 @@ The installation process will walk through installing the pre-requisites, config
   * Get code from Git
     * The following commands will download the HomePiSecurity code from GitHub
     * Execute: `sudo git clone https://github.com/darinbunker/HomePiSecurity.git`
+1. Update System
+  * Ensure that the OS is updated before beginning the install.
+    * Execute the following commands to update the OS:
+      * `sudo apt-get update -q`
+      * `sudo apt-get upgrade -y --force-yes -qq`
 1. Execute the install script
   * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh`
     * Optionally, you can provide a unique password to be used for the MySQL installation (default password is "TheMySQLPass!")

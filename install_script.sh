@@ -12,10 +12,10 @@ else
 fi
 
 # System Update and Upgrade
-printf "Execute apt-get update...\n"
-sudo apt-get update -q
-printf "Execute apt-get upgrade...\n"
-sudo apt-get upgrade -y --force-yes -qq
+# printf "Execute apt-get update...\n"
+# sudo apt-get update -q
+# printf "Execute apt-get upgrade...\n"
+# sudo apt-get upgrade -y --force-yes -qq
 
 # Install MySQL Server
 printf "Execute install of MySQL...\n"
@@ -58,6 +58,7 @@ sudo sh create_cert.sh homepisecurity
 sudo mkdir /etc/apache2/ssl
 sudo cp ./homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem
 sudo cp ./homepisecurity.key /etc/apache2/ssl/homepisecurity.key
+sudo cp ./homepisecurity.p12 /etc/apache2/ssl/homepisecurity.p12
 sudo chmod 600 /etc/apache2/ssl/homepisecurity.key
 
 ## Create a copy of current default-ssl file
