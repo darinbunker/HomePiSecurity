@@ -74,6 +74,7 @@ The installation process will walk through installing the pre-requisites, config
     * Execute the following commands to update the OS:
       * `sudo apt-get update -q`
       * `sudo apt-get upgrade -y --force-yes -qq`
+    * or you can execute a script provided `sudo sh /apps/HomePiSecurity/update_system_script.sh`
 1. Execute the install script
   * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh`
     * Optionally, you can provide a unique password to be used for the MySQL installation (default password is "TheMySQLPass!")
