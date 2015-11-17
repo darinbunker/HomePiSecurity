@@ -14,6 +14,11 @@ fi
 sysname=$HOSTNAME
 dbuser="root"
 
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+echo "Start time: $(date)"
+printf "\n"
+
+
 # System Update and Upgrade
 # printf "Execute apt-get update...\n"
 # sudo apt-get update -q
@@ -105,5 +110,8 @@ sudo sed -i "s:[ReplaceHostName]:$sysname:g" /apps/HomePiSecurity/service/latest
 sudo sed -i "s:[ReplaceConnectionUsername]:$dbuser:g" /apps/HomePiSecurity/service/latest/application.properties
 sudo sed -i "s:[ReplaceConnectionPassword]:$MySQLPass:g" /apps/HomePiSecurity/service/latest/application.properties
 
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+echo "End time: $(date)"
+printf "\n"
 
 exit 0
