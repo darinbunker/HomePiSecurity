@@ -33,6 +33,7 @@ commonName=$DOMAIN
 organizationalUnitName=WebServices
 emailAddress=none@none.org
 "
+subj_keystore="CN=$DOMAIN, OU=WebServices, O=PiHomeSecurity, L=Provo, S=Utah, C=US"
 
 # Generate the server private key
 openssl genrsa -des3 -out $DOMAIN.key -passout env:PASSPHRASE 2048
@@ -59,5 +60,6 @@ openssl x509 -req -days 3650 -in $DOMAIN.csr -signkey $DOMAIN.key -out $DOMAIN.c
 fail_if_error $?
 
 # Generate the keystore for Tomcat
-openssl pkcs12 -export -in $DOMAIN.crt -inkey $DOMAIN.key -out $DOMAIN.p12 -name pihomesecurity -CAfile $DOMAIN.crt -caname root -chain -password pass:P@Se3u1tyL02k
+keytool -genkey -alias homepikeystore -dname "$subj_keystore" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -storepass P@Se3u1tyL02k -validity 3650
+#openssl pkcs12 -export -in $DOMAIN.crt -inkey $DOMAIN.key -out $DOMAIN.p12 -name piKeystore -CAfile $DOMAIN.crt -caname root -chain -password pass:P@Se3u1tyL02k
 fail_if_error $?
