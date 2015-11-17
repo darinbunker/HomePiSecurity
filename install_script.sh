@@ -11,6 +11,9 @@ else
     MySQLPass="TheMySQLPass1"
 fi
 
+sysname=$HOSTNAME
+dbuser="root"
+
 # System Update and Upgrade
 # printf "Execute apt-get update...\n"
 # sudo apt-get update -q
@@ -18,43 +21,59 @@ fi
 # sudo apt-get upgrade -y --force-yes -qq
 
 # Install MySQL Server
-printf "Execute install of MySQL...\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+printf "# Step 1 -  Execute install of MySQL...#\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 echo mysql-server-5.1 mysql-server/root_password password $MySQLPass | debconf-set-selections
 echo mysql-server-5.1 mysql-server/root_password_again password $MySQLPass | debconf-set-selections
-apt-get -q -y install mysql-server
+sudo apt-get -q -y install mysql-server
 
 # Install the Python MySQL components
-printf "Execute install of Python MySQL components...\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+printf "# Step 2 -  Execute install of Python MySQL components...#\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 sudo apt-get -y install python-mysqldb -q
 
 # Install the Twilio interface components
-printf "Execute install of Twilio components...\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+printf "# Step 3 -  Execute install of Twilio components...#\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 sudo apt-get -y install python-setuptools -q
 sudo easy_install pip
 yes | sudo pip install twilio
 
 # Install Apache Web Server
-printf "Execute install of Apache Web Server...\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+printf "# Step 4 -  Execute install of Apache Web Server...#\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 sudo apt-get install apache2 -y -q
 
 # Install the HomePiSecurity Database
-printf "Execute install of MySQL database...\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+printf "# Step 5 -  Execute install of MySQL database...#\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 mysql -u root -p$MySQLPass < /apps/HomePiSecurity/database/home_security_db_script.sql
 
 # Copy execution file to startup location
 sudo cp /apps/HomePiSecurity/engine/armed-engine.sh /etc/init.d/armed-engine.sh
 
-# Setup SSL for Web Server
-printf "Setup SSL on Apache Web Server...\n"
+# Install Java Tools to create SSL cert
+# printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+# printf "# Step 6 -  Install of Java tools (Openjdk...)#\n"
+# printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+#sudo apt-get install openjdk-7-jdk
 
-## Enable SSL
+# Setup SSL for Web Server
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+printf "# Step 6 -  Configure SSL communications...#\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 sudo a2ensite default-ssl
 sudo a2enmod ssl
 ## Restart apache services
 sudo service apache2 restart
 sudo /etc/init.d/apache2 restart
 ## Generate the certificate and copy it to configured location
-sudo sh create_cert.sh homepisecurity
+sudo sh /apps/HomePiSecurity/create_cert.sh homepisecurity
 sudo mkdir /etc/apache2/ssl
 sudo cp ./homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem
 sudo cp ./homepisecurity.key /etc/apache2/ssl/homepisecurity.key
@@ -77,6 +96,14 @@ sudo sed -i "s:/etc/ssl/private/ssl-cert-snakeoil.key:/etc/apache2/ssl/homepisec
 # 2 SSLCertificateKeyFile /etc/apache2/ssl/homepisecurity.key
 
 sudo /etc/init.d/apache2 restart
+
+# Setup SSL for Web Server
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+printf "# Step 7 -  Setup Java Service...#\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+sudo sed -i "s:[ReplaceHostName]:$sysname:g" /apps/HomePiSecurity/service/latest/application.properties
+sudo sed -i "s:[ReplaceConnectionUsername]:$dbuser:g" /apps/HomePiSecurity/service/latest/application.properties
+sudo sed -i "s:[ReplaceConnectionPassword]:$MySQLPass:g" /apps/HomePiSecurity/service/latest/application.properties
 
 
 exit 0
