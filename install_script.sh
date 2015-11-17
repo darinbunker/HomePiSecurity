@@ -102,13 +102,12 @@ sudo sed -i "s:/etc/ssl/private/ssl-cert-snakeoil.key:/etc/apache2/ssl/homepisec
 
 sudo /etc/init.d/apache2 restart
 
-# Setup SSL for Web Server
+# Setup Java Service
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 printf "# Step 7 -  Setup Java Service...#\n"
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
-sudo sed -i "s:[ReplaceHostName]:$sysname:g" /apps/HomePiSecurity/service/latest/application.properties
-sudo sed -i "s:[ReplaceConnectionUsername]:$dbuser:g" /apps/HomePiSecurity/service/latest/application.properties
-sudo sed -i "s:[ReplaceConnectionPassword]:$MySQLPass:g" /apps/HomePiSecurity/service/latest/application.properties
+sudo sed -i "s:ReplaceConnectionUsername:$dbuser:g" /apps/HomePiSecurity/service/latest/application.properties
+sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" /apps/HomePiSecurity/service/latest/application.properties
 
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 echo "End time: $(date)"
