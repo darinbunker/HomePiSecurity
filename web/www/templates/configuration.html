@@ -1,0 +1,46 @@
+<div ng-controller="ConfigurationController as configurations">
+
+  <!--
+  <div id='cssmenu'>
+    <ul>
+       <li><a ng-click="routeNav('state')"><span>State</span></a></li>
+       <li><a ng-click="routeNav('schedules')"><span>Schedules</span></a></li>
+       <li><a ng-click="routeNav('users')"><span>Users</span></a></li>
+       <li class='active'><a href='#'><span>Configuration</span></a></li>
+       <li class='last'><a ng-click="logout()"><span>Logout</span></a></li>
+    </ul>
+  </div>
+  -->
+
+  <md-content ng-repeat="items in state">
+    <md-toolbar class="md-theme-light">
+      <h2 class="md-toolbar-tools">
+        <span>Alert Rules - {{items.app_module}}</span>
+      </h2>
+    </md-toolbar>
+    <md-content>
+      <md-list>
+        <md-list-item class="md-3-line">
+          <div class="md-list-item-text" layout="row" layout-align="center center">
+            <p class="config-p-labels">Override Alert Rule</p>
+            <md-select placeholder="Choose Alert Rule" ng-model="items.override_alert_rule">
+              <md-option ng-value="rule.id" ng-repeat="rule in alertRules">{{rule.rule_name}}</md-option>
+            </md-select>
+          </div>
+          <md-divider></md-divider>
+        </md-list-item>
+        <md-list-item class="md-3-line" layout="row">
+          <div class="md-list-item-text" layout="row" layout-align="center center">
+            <p class="config-p-labels">General Alert Rule</p>
+            <md-select placeholder="Choose Alert Rule" ng-change="loadState()" ng-model="items.general_alert_rule">
+              <md-option ng-value="rule.id" ng-repeat="rule in alertRules">{{rule.rule_name}}</md-option>
+            </md-select>
+          </div>
+          <md-divider></md-divider>
+        </md-list-item>
+      </md-list>
+    </md-content>
+  </md-content>
+
+
+</div>

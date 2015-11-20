@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+  <head>
+  	<meta charset="UTF-8">
+  	<title>Pi Home Security System</title>
+    <link rel="stylesheet" href="css/angular-material.min.css" />
+    <link rel="stylesheet" href="css/opensans.css" type='text/css'>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/cssmenu.css" />
+    
+
+  </head>
+  <body layout="column" layout-align="top center">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <span class="md-flex">Pi Security System</span>
+      </div>
+    </md-toolbar>
+    
+    <!--  <div ng-if="showNavigation"> -->
+      <div ng-controller="NavController as navigation">
+        <div ng-if="loggedIn()">
+          <md-content class="md-padding">
+            <!-- <md-tabs md-border-bottom md-selected="getSelectedIndex()"> -->
+            <md-tabs md-selected="selectedIndex" md-border-bottom>
+              <md-tab ng-model="navItems" label="{{}}" ng-repeat="items in navItems" label="{{items.type}}">
+                <span class="span-nav-menu" ng-click="routeNav(items.type)"> 
+                  {{items.type}}
+                </span>
+              </md-tab>
+            </md-tabs>
+          </md-content>
+        </div>
+      </div>
+    <!-- </div> -->
+
+    <div id="view" ng-view></div>
+
+    <!-- 
+    <div class="currentState">
+      <div class="innerBox">
+        
+      </div>
+    </div>
+    -->
+
+    <!-- <div class="contentBox">
+      <div class="innerBox"></div>
+    </div>
+
+    <div class="footer"></div> -->
+
+    <!-- <div class="black-background"></div> -->
+    
+    <script src="js/angular.js"></script>
+    <script src="js/angular-route.js"></script>
+    <script src="js/angular-animate.min.js"></script>
+    <script src="js/angular-aria.min.js"></script>
+    <script src="js/angular-material.min.js"></script>
+    <script src="js/angular-cookies.min.js"></script>
+    <script src="js/app.js"></script>
+    
+  </body>
+</html>

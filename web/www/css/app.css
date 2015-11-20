@@ -1,0 +1,349 @@
+body {
+	font-family: "Open Sans";
+  margin: 0;
+	padding: 0;
+	text-align: left;
+	font-size: 13px;
+	/* color: #061C37;
+	background: #014D5D url(../images/background.png);
+	background-repeat:repeat-x; */
+	/* text-align: center; */
+}
+
+.appHeader {
+	font-size: 36px;
+}
+
+.currentState {
+	position:relative;
+	width:650px;
+	min-height: 325px;
+	/* height:325px; */
+	top:25px;
+	border-style: solid;
+  border-width: 5px;
+  border-color: #ffffff;
+  background-color: #fffff9;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom:5px;
+}
+
+.footer {
+	width: 650px;
+	height:16px;
+	position: relative;
+	background: url(../images/footer.png) no-repeat;
+	color:#386172;
+	padding-top:5px;
+	bottom: -25px;
+	margin-left: auto;
+  margin-right: auto;
+  z-index: 100;
+}
+
+.contentBox {
+	position:relative;
+	width:650px;
+	background-color:#FFFFFF;
+	margin-left: auto;
+  margin-right: auto;
+	height:auto;
+	top:40px;
+	padding-top: 5px;
+	padding-bottom:35px;
+}
+
+.innerBox {
+	position:relative;
+	top:5px;
+	padding: 10px;
+	overflow-y:auto;
+	margin-left: auto;
+  margin-right: auto;
+  width: 625px;
+  min-height: 150px;
+  max-height: 500px;
+  height:450px;
+}
+
+.detailHeader {
+	width: 200px;
+	float: left;
+	text-align: left;
+	font-size: 18px;
+	border-style: solid;
+  border-width: 1px;
+  margin-right: 10px;
+  border-color: #999999;
+}
+
+.detailDetail {
+	width: 200px;
+	float: left;
+	text-align: right;
+	font-size: 18px;
+	border-style: solid;
+  border-width: 1px;
+  border-color: #999999;
+}
+
+.state-action-header {
+  width: 200px;
+  height: 35px;
+  font-size: 18px;
+  text-align: left;
+  float: left;
+}
+
+.state-action-detail {
+  width: 200px;
+  height: 35px;
+  font-size: 18px;
+  text-align: right;
+  float: left;
+}
+
+.state-action-container {
+  position: relative;
+  top: 30px;
+}
+
+.footer-link-actions {
+  position: relative;
+  top: 15px;
+  text-align: right;
+  font-size: 12px;
+  width: 95%
+}
+
+.black-background {
+	position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  transition: 2.0s;
+  opacity: 0;
+  display:none;
+}
+
+.show-black-background {
+	position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  transition: 2.0s;
+  opacity: 1;
+}
+
+.table-header-left {
+	background-color: #999999;
+	text-align: left;
+	padding: 5px;
+}
+
+.table-header-center {
+	background-color: #999999;
+	text-align: center;
+}
+
+.table-row-column-left {
+	text-align: left;
+	background-color: #ffffff;
+	padding: 5px;
+}
+
+.table-row-column-center {
+	text-align: center;
+	background-color: #ffffff;
+}
+
+.table-center {
+	width:95%; 
+  margin-left:auto; 
+  margin-right:auto;
+}
+
+.table-center-half-width {
+  width:70%; 
+  margin-left:auto; 
+  margin-right:auto;
+}
+
+.icon-style {
+	width:15px;
+	height:20px;
+	border:0;
+}
+
+.schedules {
+	margin-right: auto;
+  margin-left: auto;
+  width: 95%;
+}
+
+.display-state {
+  padding-bottom: 10px;
+}
+
+/*  Styling for Toggle Boxes */
+
+.switch {
+  position: relative;
+  margin: 10px auto;
+  height: 20px;
+  width: 80px;
+  background: rgba(0, 0, 0, 0.50);
+  border-radius: 3px;
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.switch-label {
+  position: relative;
+  z-index: 2;
+  float: left;
+  width: 38px;
+  top: -3px;
+  line-height: 26px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+.switch-label:active {
+  font-weight: bold;
+}
+
+.switch-label-off {
+  padding-left: 1px;
+}
+
+.switch-label-on {
+  padding-right: 1px;
+}
+
+.switch-input {
+  display: none;
+}
+.switch-input:checked + .switch-label {
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.65);
+  text-shadow: 0 1px rgba(255, 255, 255, 0.25);
+  -webkit-transition: 0.15s ease-out;
+  -moz-transition: 0.15s ease-out;
+  -o-transition: 0.15s ease-out;
+  transition: 0.15s ease-out;
+}
+.switch-input:checked + .switch-label-on ~ .switch-selection {
+  left: 40px;
+  /* Note: left: 50% doesn't transition in WebKit */
+}
+
+.switch-selection {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  top: 2px;
+  left: 2px;
+  width: 38px;
+  height: 16px;
+  background: #3aa2d0;
+  border-radius: 3px;
+  background-image: -webkit-linear-gradient(top, #4fc9ee, #3aa2d0);
+  background-image: -moz-linear-gradient(top, #4fc9ee, #3aa2d0);
+  background-image: -o-linear-gradient(top, #4fc9ee, #3aa2d0);
+  background-image: linear-gradient(to bottom, #4fc9ee, #3aa2d0);
+  -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 0 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 0 2px rgba(0, 0, 0, 0.2);
+  -webkit-transition: left 0.15s ease-out;
+  -moz-transition: left 0.15s ease-out;
+  -o-transition: left 0.15s ease-out;
+  transition: left 0.15s ease-out;
+}
+
+/*  ng-Model Styling */
+
+.ng-modal-overlay {
+  /* A dark translucent div that covers the whole screen */
+  position:absolute;
+  z-index:9999;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:#000000;
+  opacity: 0.8;
+}
+.ng-modal-dialog {
+  /* A centered div above the overlay with a box shadow. */
+  z-index:10000;
+  position: absolute;
+  width: 50%; /* Default */
+
+  /* Center the dialog */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+
+  background-color: #fff;
+  box-shadow: 4px 4px 80px #000;
+}
+.ng-modal-dialog-content {
+  padding:10px;
+  text-align: left;
+}
+.ng-modal-close {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 120%;
+  display: inline-block;
+  font-weight: bold;
+}
+.center-div {
+  margin-right: auto;
+  margin-left: auto;
+  width:68%;
+}
+.dialog-input-box{
+  width: 400px;
+}
+.schedule-p-labels{
+  text-align: left;
+  padding-left: 10px;
+}
+.loginBox {
+  padding-top: 40px;
+  max-width:  90%;
+  width: 500px;
+}
+.state-actions {
+  padding-left: 2px;
+}
+.config-p-labels{
+  text-align: left;
+  padding-right: 20px;
+}
+.span-nav-menu{
+  width: 100%;
+  height: 100%;
+}
+.stretch input {
+  width: 100%
+}
+
+
+
+
+
+
+
+
+
+
+
+

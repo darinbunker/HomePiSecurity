@@ -1,0 +1,27 @@
+<div ng-controller="UserController as users">
+
+  <md-content>
+    <md-list>
+      <md-subheader class="md-no-sticky">Users</md-subheader>
+      <md-divider ></md-divider>
+      <div layout="row" layout-align="end center">
+        <md-button ng-click="setCreate($event)" class="md-primary">
+          + Add User
+        </md-button>
+      </div>
+
+      <md-list-item ng-click="toggleModal(user, $event)" ng-repeat="user in users">
+        <div class="md-list-item-text">
+          <h4>Username: {{user.user_name}}</h4>
+          <h4>Contact Number: {{user.sms_number}}</h4>
+        </div>
+        <md-button class="md-icon-button md-secondary" ng-click="confirmRemove(user, $event)" aria-label="Delete">
+          <md-icon md-svg-icon="images/icons/delete48.svg"></md-icon>
+        </md-button>
+      </md-list-item>
+
+      <md-divider ></md-divider>
+    </md-list>
+  </md-content>
+
+</div>

@@ -90,6 +90,7 @@ sudo cp $installdir/homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem
 sudo cp $installdir/homepisecurity.key /etc/apache2/ssl/homepisecurity.key
 #sudo cp ./homepisecurity.p12 /etc/apache2/ssl/homepisecurity.p12
 sudo cp $installdir/homepisecurity.p12 /etc/apache2/ssl/homepisecurity.p12
+sudo cp $installdir/homepisecurity.p12 $installdir/service/latest/homepisecurity.p12
 sudo chmod 600 /etc/apache2/ssl/homepisecurity.key
 
 ## Create a copy of current default-ssl file
@@ -117,6 +118,29 @@ printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 sudo sed -i "s:ReplaceConnectionUsername:$dbuser:g" $installdir/service/latest/application.properties
 # sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" /apps/HomePiSecurity/service/latest/application.properties
 sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" $installdir/service/latest/application.properties
+
+# Update the service process
+sudo sed -i "s:addpathtojar:$installdir/service/latest/dbunk-0.0.4.jar:g" $installdir/service/pi-service.sh
+# Move service process file to init.d 
+sudo cp $installdir/service/pi-service.sh /etc/init.d/pi-service.sh
+
+# Start the service
+printf "Starting HomePiSecurity Service..."
+sudo sh /etc/init.d/pi-service.sh start
+
+
+# Setup Web Service
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+printf "# Step 7 -  Setup Web Service...#\n"
+printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
+# Disable the existing default website
+#sudo a2dissite /etc/apache2/sites-available/default
+# Enable the HomePiSecuritySite
+#sudo a2ensite $installdir/web/config/homepimanage
+# Reload the service
+#sudo service apache2 reload
+
+
 
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 echo "End time: $(date)"

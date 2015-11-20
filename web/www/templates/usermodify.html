@@ -1,0 +1,64 @@
+<md-dialog aria-label="Modify User">
+  <form name="userForm">
+  <md-dialog-content class="sticky-container">
+    <md-subheader class="md-sticky-no-effect dialog-input-box">Current User</md-subheader>
+    <div ng-if="showMessage">
+      <h2>{{displayMessage}}</h2>
+    </div>
+    <md-content layout-padding>
+        <div layout layout-sm="row" layout-align="start center">
+          <md-input-container flex>
+            <label>Username</label>
+            <input name="username" required ng-model="targetUser.user_name">
+          </md-input-container>
+        </div>
+        <div layout layout-sm="row" layout-align="start center">
+          <md-input-container flex>
+            <label>SMS Phone Number</label>
+            <input name="smsnumber" required ng-model="targetUser.sms_number">
+          </md-input-container>
+        </div>
+
+        <div layout layout-sm="row">
+          <md-input-container flex>
+            <label>Password</label>
+            <input type="password" ng-model="targetUser.firstPassword">
+          </md-input-container>
+          <md-input-container flex>
+            <label>Confirm Password</label>
+            <input type="password" ng-model="targetUser.secondPassword">
+          </md-input-container>
+        </div>
+
+        <div layout layout-sm="column">
+          <md-input-container flex>
+            <md-checkbox ng-model="targetUser.send_email" aria-label="sendEmail">
+              Send Email 
+            </md-checkbox>
+          </md-input-container>
+          <md-input-container flex>
+            <md-checkbox ng-model="targetUser.send_sms" aria-label="sendSms">
+              Send SMS 
+            </md-checkbox>
+          </md-input-container>
+        </div>
+
+        <div layout layout-sm="row" layout-align="start center">
+          <p class="schedule-p-labels" flex="33">Active User</p>
+          <md-switch aria-label="Active" ng-model="targetUser.active">
+            Active
+          </md-switch>
+        </div>
+    </md-content>
+
+    <div class="md-actions" layout="row">
+      <md-button ng-click="cancel()" class="md-primary">
+       Cancel
+      </md-button>
+      <md-button ng-click="answer(targetUser)" class="md-primary">
+        Save
+      </md-button>
+    </div>
+  </md-dialog-content>
+  </form>
+</md-dialog>

@@ -1,0 +1,28 @@
+<div ng-controller="ScheduleController as schedules">
+
+  <md-content>
+    <md-list>
+      <md-subheader class="md-no-sticky">Schedules</md-subheader>
+      <md-divider ></md-divider>
+      <div layout="row" layout-align="end center">
+        <md-button ng-click="setCreate($event)" class="md-primary">
+          + Add Schedule
+        </md-button>
+      </div>
+
+      <md-list-item ng-click="toggleModal(schedule, $event)" ng-repeat="schedule in schedules">
+        <img src="images/icons/day_{{schedule.start_day}}.ico" class="md-avatar" />
+        <div class="md-list-item-text">
+          <h4>Start: {{schedule.start_day | schedule_day}} at {{schedule.start_hour}}:{{schedule.start_minute | schedule_minute}}</h4>
+          <h4>End: {{schedule.end_day | schedule_day}} at {{schedule.end_hour}}:{{schedule.end_minute | schedule_minute}}</h4>
+        </div>
+        <md-button class="md-icon-button md-secondary" ng-click="confirmRemove(schedule, $event)" aria-label="Delete">
+          <md-icon md-svg-icon="images/icons/delete48.svg"></md-icon>
+        </md-button>
+      </md-list-item>
+
+      <md-divider ></md-divider>
+    </md-list>
+  </md-content>
+
+</div>

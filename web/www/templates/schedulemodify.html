@@ -1,0 +1,65 @@
+<md-dialog aria-label="Modify Schedule">
+  <form>
+  <md-dialog-content class="sticky-container">
+    <md-subheader class="md-sticky-no-effect dialog-input-box">Current Schedule</md-subheader>
+    <md-content layout-padding>
+    <div>
+      <div layout-md="row" layout-align="start center">
+        <p class="schedule-p-labels" flex="33">Security Module</p>
+        <md-select placeholder="app module" ng-model="targetSchedule.app_module_id" flex="66">
+          <md-option ng-value="app.id" ng-repeat="app in modules">{{app.app_module}}</md-option>
+        </md-select>
+      </div>
+      <div layout-md="row" layout-align="start center">
+        <p class="schedule-p-labels" flex="33">Schedule Start</p>
+        <div flex="66">
+          <md-select placeholder="start day" ng-model="targetSchedule.start_day" flex>
+            <md-option ng-value="day.id" ng-repeat="day in daysOfWeek">{{day.dayOfWeek}}</md-option>
+          </md-select>
+          <md-select placeholder="start hour" ng-model="targetSchedule.start_hour" flex>
+            <md-option ng-value="hour.id" ng-repeat="hour in hoursInDay">{{hour.hourInDay}}</md-option>
+          </md-select>
+          <md-select placeholder="start minute" ng-model="targetSchedule.start_minute" flex>
+            <md-option ng-value="minute.id" ng-repeat="minute in minutesInHour">{{minute.minuteInHour}}</md-option>
+          </md-select>
+        </div>
+      </div>
+      <div layout-md="row" layout-align="start center">
+        <p class="schedule-p-labels" flex="33">Schedule End</p>
+        <div flex="66">
+          <md-select placeholder="end day" ng-model="targetSchedule.end_day" flex>
+            <md-option ng-value="day.id" ng-repeat="day in daysOfWeek">{{day.dayOfWeek}}</md-option>
+          </md-select>
+          <md-select placeholder="end hour" ng-model="targetSchedule.end_hour" flex>
+            <md-option ng-value="hour.id" ng-repeat="hour in hoursInDay">{{hour.hourInDay}}</md-option>
+          </md-select>
+          <md-select placeholder="end minute" ng-model="targetSchedule.end_minute" flex>
+            <md-option ng-value="minute.id" ng-repeat="minute in minutesInHour">{{minute.minuteInHour}}</md-option>
+          </md-select>
+        </div>
+      </div>
+      <div layout-md="row" layout-align="start center">
+        <p class="schedule-p-labels" flex="33">Alert Rule</p>
+        <md-select placeholder="alert rule" ng-model="targetSchedule.alert_rule_id" flex="66">
+          <md-option ng-value="rule.id" ng-repeat="rule in alertRules">{{rule.rule_name}}</md-option>
+        </md-select>
+      </div>
+      <div layout-md="row" layout-align="start center">
+        <p class="schedule-p-labels" flex="33">Active Schedule</p>
+        <md-switch aria-label="Active" ng-model="targetSchedule.active">
+          Active
+        </md-switch>
+      </div>
+    </div>
+  </md-content>
+  </md-dialog-content>
+  <div class="md-actions" layout="row">
+    <md-button ng-click="cancel()" class="md-primary">
+     Cancel
+    </md-button>
+    <md-button ng-click="answer(targetSchedule)" class="md-primary">
+      Save
+    </md-button>
+  </div>
+  </form>
+</md-dialog>
