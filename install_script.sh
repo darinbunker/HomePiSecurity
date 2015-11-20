@@ -13,6 +13,7 @@ fi
 
 sysname=$HOSTNAME
 dbuser="root"
+installdir=$PWD
 
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 echo "Start time: $(date)"
@@ -57,10 +58,12 @@ sudo apt-get install apache2 -y -q
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 printf "# Step 5 -  Execute install of MySQL database...#\n"
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
-mysql -u root -p$MySQLPass < /apps/HomePiSecurity/database/home_security_db_script.sql
+# mysql -u root -p$MySQLPass < /apps/HomePiSecurity/database/home_security_db_script.sql
+mysql -u root -p$MySQLPass < $installdir/database/home_security_db_script.sql
 
 # Copy execution file to startup location
-sudo cp /apps/HomePiSecurity/engine/armed-engine.sh /etc/init.d/armed-engine.sh
+# sudo cp /apps/HomePiSecurity/engine/armed-engine.sh /etc/init.d/armed-engine.sh
+sudo cp $installdir/engine/armed-engine.sh /etc/init.d/armed-engine.sh
 
 # Install Java Tools to create SSL cert
 # printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
@@ -78,11 +81,15 @@ sudo a2enmod ssl
 sudo service apache2 restart
 sudo /etc/init.d/apache2 restart
 ## Generate the certificate and copy it to configured location
-sudo sh /apps/HomePiSecurity/create_cert.sh homepisecurity
+# sudo sh /apps/HomePiSecurity/create_cert.sh homepisecurity
+sudo sh $installdir/create_cert.sh homepisecurity
 sudo mkdir /etc/apache2/ssl
-sudo cp ./homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem
-sudo cp ./homepisecurity.key /etc/apache2/ssl/homepisecurity.key
-sudo cp ./homepisecurity.p12 /etc/apache2/ssl/homepisecurity.p12
+#sudo cp ./homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem
+sudo cp $installdir/homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem
+#sudo cp ./homepisecurity.key /etc/apache2/ssl/homepisecurity.key
+sudo cp $installdir/homepisecurity.key /etc/apache2/ssl/homepisecurity.key
+#sudo cp ./homepisecurity.p12 /etc/apache2/ssl/homepisecurity.p12
+sudo cp $installdir/homepisecurity.p12 /etc/apache2/ssl/homepisecurity.p12
 sudo chmod 600 /etc/apache2/ssl/homepisecurity.key
 
 ## Create a copy of current default-ssl file
@@ -106,11 +113,44 @@ sudo /etc/init.d/apache2 restart
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 printf "# Step 7 -  Setup Java Service...#\n"
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
-sudo sed -i "s:ReplaceConnectionUsername:$dbuser:g" /apps/HomePiSecurity/service/latest/application.properties
-sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" /apps/HomePiSecurity/service/latest/application.properties
+# sudo sed -i "s:ReplaceConnectionUsername:$dbuser:g" /apps/HomePiSecurity/service/latest/application.properties
+sudo sed -i "s:ReplaceConnectionUsername:$dbuser:g" $installdir/service/latest/application.properties
+# sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" /apps/HomePiSecurity/service/latest/application.properties
+sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" $installdir/service/latest/application.properties
 
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 echo "End time: $(date)"
 printf "\n"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 exit 0
