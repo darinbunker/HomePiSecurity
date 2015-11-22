@@ -7,6 +7,7 @@
 # http://usrportage.de/archives/919-Batch-generating-SSL-certificates.html
 
 installdir=$(dirname $0)
+echo "create_cert install directory: $installdir"
 
 # Script accepts a single argument, the fqdn for the cert
 DOMAIN="$1"
