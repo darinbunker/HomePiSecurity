@@ -6,6 +6,9 @@
 # 
 # http://usrportage.de/archives/919-Batch-generating-SSL-certificates.html
 
+installdir=$(dirname $0)
+echo "create_cert install directory: $installdir"
+
 # Script accepts a single argument, the fqdn for the cert
 DOMAIN="$1"
 if [ -z "$DOMAIN" ]; then
@@ -37,7 +40,7 @@ emailAddress=none@none.org
 subj_keystore="CN=$DOMAIN, OU=WebServices, O=PiHomeSecurity, L=Provo, S=Utah, C=US"
 
 # Generate the server private key
-openssl genrsa -des3 -out $DOMAIN.key -passout env:PASSPHRASE 2048
+openssl genrsa -des3 -out $installdir/$DOMAIN.key -passout env:PASSPHRASE 2048
 fail_if_error $?
 
 # Generate the CSR
@@ -49,20 +52,20 @@ openssl req \
     -out $DOMAIN.csr \
     -passin env:PASSPHRASE
 fail_if_error $?
-cp $DOMAIN.key $DOMAIN.key.org
+cp $installdir/$DOMAIN.key $installdir/$DOMAIN.key.org
 fail_if_error $?
 
 # Strip the password so we don't have to type it every time we restart Apache
-openssl rsa -in $DOMAIN.key.org -out $DOMAIN.key -passin env:PASSPHRASE
+openssl rsa -in $installdir/$DOMAIN.key.org -out $installdir/$DOMAIN.key -passin env:PASSPHRASE
 fail_if_error $?
 
 # Generate the cert (good for 10 years)
-openssl x509 -req -days 3650 -in $DOMAIN.csr -signkey $DOMAIN.key -out $DOMAIN.crt
+openssl x509 -req -days 3650 -in $installdir/$DOMAIN.csr -signkey $installdir/$DOMAIN.key -out $installdir/$DOMAIN.crt
 fail_if_error $?
 
 # Generate the keystore for Tomcat
 #keytool -genkey -alias homepikeystore -dname "$subj_keystore" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -storepass P@Se3u1tyL02k -validity 3650
 #openssl pkcs12 -export -in $DOMAIN.crt -inkey $DOMAIN.key -out $DOMAIN.p12 -name piKeystore -CAfile $DOMAIN.crt -caname root -chain -password pass:P@Se3u1tyL02k
-sudo keytool -genkeypair -alias homepikeystore -dname "$subj_keystore" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -storepass P@Se3u1tyL02k -validity 3650
+sudo keytool -genkeypair -alias homepikeystore -dname "$subj_keystore" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore $installdir/homepisecurity.p12 -storepass P@Se3u1tyL02k -validity 3650
 
 fail_if_error $?
