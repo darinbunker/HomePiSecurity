@@ -48,8 +48,8 @@ openssl req \
     -new \
     -batch \
     -subj "$(echo -n "$subj" | tr "\n" "/")" \
-    -key $DOMAIN.key \
-    -out $DOMAIN.csr \
+    -key $installdir/$DOMAIN.key \
+    -out $installdir/$DOMAIN.csr \
     -passin env:PASSPHRASE
 fail_if_error $?
 cp $installdir/$DOMAIN.key $installdir/$DOMAIN.key.org
