@@ -135,8 +135,10 @@ sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" $installdir/service/lates
 
 # Update the service process
 sudo sed -i "s:addpathtojar:$installdir/service/latest/dbunk-0.0.4:g" $installdir/service/pi-service.sh
+sudo sed -i "s:ReplaceDirectoryPath:$installdir/service/latest:g" $installdir/service/latest/application.properties
 # Move service process file to init.d 
 sudo cp $installdir/service/pi-service.sh /etc/init.d/pi-service.sh
+sudo cp $installdir/service/latest/application.properties /etc/init.d/application.properties
 
 # Start the service
 printf "Starting HomePiSecurity Service..."
