@@ -1,5 +1,5 @@
 
-var url = "http://localhost:8084";
+var url = "http://SetServicePathVariable:SetServicePortVariable";
 var app = angular.module('app', ['ngRoute', 'ngMaterial', 'ngCookies']).config(function($locationProvider, $routeProvider, $filterProvider){
 
 		$routeProvider.when('/login', {
