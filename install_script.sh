@@ -202,10 +202,10 @@ sudo cp $installdir/web/config/homepimanage.conf /etc/apache2/sites-available/ho
 printf "** Executing: sudo cp $installdir/web/config/homepimanage-ssl.conf /etc/apache2/sites-available/homepimanage-ssl.conf \n"
 sudo cp $installdir/web/config/homepimanage-ssl.conf /etc/apache2/sites-available/homepimanage-ssl.conf 
 # Set properties values for web site
-printf "** Executing: sudo sed -i s:SetServicePathVariable:$serverAddress:g $installdir/web/www/js/app.js \n"
-sudo sed -i "s:SetServicePathVariable:$serverAddress:g" $installdir/web/www/js/app.js
-printf "** Executing: sudo sed -i s:SetServicePortVariable:$serverPort:g $installdir/web/www/js/app.js \n"
-sudo sed -i "s:SetServicePortVariable:$serverPort:g" $installdir/web/www/js/app.js
+printf "** Executing: sudo sed -i s:SetServicePathVariable:$serverAddress:g $installdir/web/www/js/config.js \n"
+sudo sed -i "s:SetServicePathVariable:$serverAddress:g" $installdir/web/www/js/config.js
+printf "** Executing: sudo sed -i s:SetServicePortVariable:$serverPort:g $installdir/web/www/js/config.js \n"
+sudo sed -i "s:SetServicePortVariable:$serverPort:g" $installdir/web/www/js/config.js
 # Disable the existing default website
 printf "** Executing: sudo a2dissite default \n"
 sudo a2dissite default

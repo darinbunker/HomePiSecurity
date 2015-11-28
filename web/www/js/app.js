@@ -1,5 +1,4 @@
 
-var url = "https://SetServicePathVariable:SetServicePortVariable";
 var app = angular.module('app', ['ngRoute', 'ngMaterial', 'ngCookies']).config(function($locationProvider, $routeProvider, $filterProvider){
 
 		$routeProvider.when('/login', {
