@@ -94,10 +94,11 @@ The installation process will walk through installing the pre-requisites, config
     * EMAIL_PWD
     * EMAIL_FROM
 1. Update configuration file for Security Engine
-  * edit the file: `/apps/HomePiSecurity/engine/configSettings.py`
-  * Update the following sections:
-    * SMS Settings
-    * Email Settings
+  * Execute script to update settings file `sudo sh /apps/HomePiSecurity/engine/configure_settings.sh`
+    * This will update this file: `/apps/HomePiSecurity/engine/configSettings.py`
+    * The following sections of `configSettings.py` file will be updated:
+      * SMS Settings
+      * Email Settings
 1. Set the GPIO pins for your doors and windows
   * First, configure the security sensors to the GPIO Pins
     * Each sensor requires two wires, black and red (or something similar)
