@@ -13,7 +13,7 @@ if [ $# -ne 2 ]
     exit 2
 fi
 
-installdir=$1
+installdir=$(dirname $0)
 echo "create_cert install directory: $installdir"
 inputKey=$2
 echo "input key value: $inputKey"
