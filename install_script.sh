@@ -96,10 +96,10 @@ sudo sed -i "s:ReplaceHomeDirectory:$installdir/engine:g" $installdir/engine/pi-
 printf "** Executing: sudo cp $installdir/engine/pi-svr-engine.sh /etc/init.d/pi-svr-engine.sh \n"
 sudo cp $installdir/engine/pi-svr-engine.sh /etc/init.d/pi-svr-engine.sh
 # Update configuration settings
-printf "** Executing: sudo sed -i s:ReplaceDBUser:$dbuser:g $installdir/engine/confSettings.py \n"
-sudo sed -i "s:ReplaceDBUser:$dbuser:g" $installdir/engine/confSettings.py
-printf "** Executing: sudo sed -i s:ReplaceDBPassword:$MySQLPass:g $installdir/engine/confSettings.py \n"
-sudo sed -i "s:ReplaceDBPassword:$MySQLPass:g" $installdir/engine/confSettings.py
+printf "** Executing: sudo sed -i s:ReplaceDBUser:$dbuser:g $installdir/engine/configSettings.py \n"
+sudo sed -i "s:ReplaceDBUser:$dbuser:g" $installdir/engine/configSettings.py
+printf "** Executing: sudo sed -i s:ReplaceDBPassword:$MySQLPass:g $installdir/engine/configSettings.py \n"
+sudo sed -i "s:ReplaceDBPassword:$MySQLPass:g" $installdir/engine/configSettings.py
 
 
 # Setup SSL for Web Server
