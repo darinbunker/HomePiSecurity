@@ -112,7 +112,7 @@ The installation process will walk through installing the pre-requisites, config
       * Run the display_pin_status.py file to get a base of which pins have which status
     * Open a door and re-run display_pin_status.py
   * Third, update the database with the GPIO pin details
-    * For each GPIO pin, run the following to insert into the database:
+    * For each GPIO pin, run the following to insert the pin configuration into the database:
       * Execute: `sudo python /apps/HomePiSecurity/engine/add_module.py`
         * Follow the prompts of the script to provide the details needed to insert into the database
 1. Configure system users and security schedules
