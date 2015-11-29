@@ -13,13 +13,10 @@ fi
 
 sysname=$HOSTNAME
 dbuser="root"
-
 serverAddress=$(/sbin/ifconfig | grep -e "inet:" -e "addr:" | grep -v "inet6" | grep -v "127.0.0.1" | head -n 1 | awk '{print $2}' | cut -c6-)
 serverPort="8443"
-
-#installdir=$PWD
 installdir=$(dirname $0)
-printf "install_script.sh install directory: $installdir"
+keyPassword=$(head -c 500 /dev/urandom | tr -dc a-z0-9A-Z | head -c 12; echo)
 
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 echo "Start time: $(date)"
@@ -114,8 +111,8 @@ printf "** Executing: sudo /etc/init.d/apache2 restart \n"
 sudo /etc/init.d/apache2 restart
 ## Generate the certificate and copy it to configured location
 # sudo sh /apps/HomePiSecurity/create_cert.sh homepisecurity
-printf "** Executing: sudo sh $installdir/install/cert/create_cert.sh homepisecurity \n"
-sudo sh $installdir/install/cert/create_cert.sh homepisecurity
+printf "** Executing: sudo sh $installdir/install/cert/create_cert.sh homepisecurity $keyPassword \n"
+sudo sh $installdir/install/cert/create_cert.sh homepisecurity $keyPassword
 printf "** Executing: sudo mkdir /etc/apache2/ssl \n"
 sudo mkdir /etc/apache2/ssl
 #sudo cp ./homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem
@@ -156,12 +153,12 @@ sudo /etc/init.d/apache2 restart
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 printf "# Step 8 -  Setup Java Service...#\n"
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
-# sudo sed -i "s:ReplaceConnectionUsername:$dbuser:g" /apps/HomePiSecurity/service/latest/application.properties
 printf "** Executing: sudo sed -i s:ReplaceConnectionUsername:$dbuser:g $installdir/service/latest/application.properties \n"
 sudo sed -i "s:ReplaceConnectionUsername:$dbuser:g" $installdir/service/latest/application.properties
-# sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" /apps/HomePiSecurity/service/latest/application.properties
 printf "** Executing: sudo sed -i s:ReplaceConnectionPassword:$MySQLPass:g $installdir/service/latest/application.properties \n"
 sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" $installdir/service/latest/application.properties
+printf "** Executing: sudo sed -i s:ReplaceKeystorePassword:$keyPassword:g $installdir/service/latest/application.properties \n"
+sudo sed -i "s:ReplaceKeystorePassword:$keyPassword:g" $installdir/service/latest/application.properties
 
 # Update the service process
 printf "** Executing: sudo sed -i s:addpathtojar:$installdir/service/latest/dbunk-0.0.4:g $installdir/service/pi-service.sh \n"
