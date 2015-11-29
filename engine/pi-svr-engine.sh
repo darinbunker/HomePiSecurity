@@ -12,8 +12,8 @@
  
 # Change the next 3 lines to suit where you install your script and what you want to call it
 DIR=ReplaceHomeDirectory
-DAEMON=$DIR/home_armed.py
-DAEMON_NAME=armed-engine
+DAEMON=$DIR/pi-sec-engine.py
+DAEMON_NAME=pi-sec-engine
  
 # Add any command line options for your daemon here
 DAEMON_OPTS=""
