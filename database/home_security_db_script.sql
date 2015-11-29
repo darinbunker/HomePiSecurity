@@ -102,7 +102,7 @@ CREATE TABLE `incident_logs` (
 
 insert into system_state (`app_module`,`active`,`active_override`,`override_alert_rule`,`general_alert_rule`,`active_schedule`,`deactivate_override`,`last_change_date`) values ('door_security', 1, 0, 3, 3, 0, 0, now());
 
-insert into users (`user_name`,`password`,`sms_number`,`active`,`send_email`,`send_sms`, `deleted`, `create_date`,`last_change_date`) values ('admin@admin.io', 'oMK+aYh5Hp/KdIWISbljvA2Oz68VUwsCKl/X5HUhSto=$L+kxRounHxTKKn4woxh/vQ8xNBtwHq5tgYqfYdhfsYg=', '+8015551234', 1, 0, 0, 0, now(), now());
+insert into users (`user_name`,`password`,`sms_number`,`active`,`send_email`,`send_sms`, `deleted`, `create_date`,`last_change_date`) values ('admin@admin.io', 'oMK+aYh5Hp/KdIWISbljvA2Oz68VUwsCKl/X5HUhSto=$L+kxRounHxTKKn4woxh/vQ8xNBtwHq5tgYqfYdhfsYg=', '+8015551234', 1, 1, 0, 0, now(), now());
 
 insert into security_schedules (`app_module_id`,`start_day`,`start_hour`,`start_minute`,`end_day`,`end_hour`,`end_minute`,`alert_rule_id`,`active`, `deleted`, `create_date`,`last_change_date`) value (1, 0, 23, 0, 2, 6, 0, 1, 1, 0, now(), now());
 insert into security_schedules (`app_module_id`,`start_day`,`start_hour`,`start_minute`,`end_day`,`end_hour`,`end_minute`,`alert_rule_id`,`active`, `deleted`,`create_date`,`last_change_date`) value (1, 1, 23, 0, 3, 6, 0, 1, 1, 0, now(), now());
