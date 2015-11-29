@@ -2,8 +2,8 @@
 
 # Database Settings 
 HOST_NAME = "localhost"
-DB_USER = "root"
-DB_PASSWORD = "123456"
+DB_USER = "ReplaceDBUser"
+DB_PASSWORD = "ReplaceDBPassword"
 DB_DATABASE = "HomeSecuritySystem"
 
 # SMS Settings - Only Twilio is supported with this version
