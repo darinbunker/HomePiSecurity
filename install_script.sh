@@ -72,28 +72,18 @@ printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 printf "** Executing: mysql -u root -p$MySQLPass < $installdir/database/home_security_db_script.sql \n"
 mysql -u root -p$MySQLPass < $installdir/database/home_security_db_script.sql
 
-# Copy execution file to startup location
-# sudo cp /apps/HomePiSecurity/engine/armed-engine.sh /etc/init.d/armed-engine.sh
-printf "** Executing: sudo cp $installdir/engine/armed-engine.sh /etc/init.d/armed-engine.sh \n"
-sudo cp $installdir/engine/armed-engine.sh /etc/init.d/armed-engine.sh
-
-# Install Java Tools to create SSL cert
-# printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
-# printf "# Step 6 -  Install of Java tools (Openjdk...)#\n"
-# printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
-#sudo apt-get install openjdk-7-jdk
 
 # Setup Python Engine service
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
-printf "# Step 6 -  Configure SSL communications...#\n"
+printf "# Step 6 -  Install Security Engine...#\n"
 printf "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n"
 # First update the service file
 # ReplaceHomeDirectory
-printf "** Executing: sudo sed -i s:ReplaceHomeDirectory:$installdir/engine:g $installdir/engine/armed-engine.sh \n"
-sudo sed -i "s:ReplaceHomeDirectory:$installdir/engine:g" $installdir/engine/armed-engine.sh
+printf "** Executing: sudo sed -i s:ReplaceHomeDirectory:$installdir/engine:g $installdir/engine/pi-svr-engine.sh \n"
+sudo sed -i "s:ReplaceHomeDirectory:$installdir/engine:g" $installdir/engine/pi-svr-engine.sh
 # Move file to service director
-printf "** Executing: sudo cp $installdir/engine/armed-engine.sh /etc/init.d/armed-engine.sh \n"
-sudo cp $installdir/engine/armed-engine.sh /etc/init.d/armed-engine.sh
+printf "** Executing: sudo cp $installdir/engine/pi-svr-engine.sh /etc/init.d/pi-svr-engine.sh \n"
+sudo cp $installdir/engine/pi-svr-engine.sh /etc/init.d/pi-svr-engine.sh
 
 
 # Setup SSL for Web Server
@@ -134,10 +124,10 @@ sudo chmod 600 /etc/apache2/ssl/homepisecurity.key
 #sudo cp /etc/apache2/sites-enabled/default-ssl /etc/apache2/sites-enabled/default-ssl-backup
 
 ## Update default-ssl file to point to new certificate file
-printf "** Executing: sudo sed -i s:/etc/ssl/certs/ssl-cert-snakeoil.pem:/etc/apache2/ssl/homepisecurity.pem:g /etc/apache2/sites-enabled/default-ssl \n"
-sudo sed -i "s:/etc/ssl/certs/ssl-cert-snakeoil.pem:/etc/apache2/ssl/homepisecurity.pem:g" /etc/apache2/sites-enabled/default-ssl
-printf "** Executing: sudo sed -i s:/etc/ssl/private/ssl-cert-snakeoil.key:/etc/apache2/ssl/homepisecurity.key:g /etc/apache2/sites-enabled/default-ssl \n"
-sudo sed -i "s:/etc/ssl/private/ssl-cert-snakeoil.key:/etc/apache2/ssl/homepisecurity.key:g" /etc/apache2/sites-enabled/default-ssl
+#printf "** Executing: sudo sed -i s:/etc/ssl/certs/ssl-cert-snakeoil.pem:/etc/apache2/ssl/homepisecurity.pem:g /etc/apache2/sites-enabled/default-ssl \n"
+#sudo sed -i "s:/etc/ssl/certs/ssl-cert-snakeoil.pem:/etc/apache2/ssl/homepisecurity.pem:g" /etc/apache2/sites-enabled/default-ssl
+#printf "** Executing: sudo sed -i s:/etc/ssl/private/ssl-cert-snakeoil.key:/etc/apache2/ssl/homepisecurity.key:g /etc/apache2/sites-enabled/default-ssl \n"
+#sudo sed -i "s:/etc/ssl/private/ssl-cert-snakeoil.key:/etc/apache2/ssl/homepisecurity.key:g" /etc/apache2/sites-enabled/default-ssl
 
 # We have to update the following two lines
 # 1 SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
@@ -161,23 +151,21 @@ printf "** Executing: sudo sed -i s:ReplaceKeystorePassword:$keyPassword:g $inst
 sudo sed -i "s:ReplaceKeystorePassword:$keyPassword:g" $installdir/service/latest/application.properties
 
 # Update the service process
-printf "** Executing: sudo sed -i s:addpathtojar:$installdir/service/latest/dbunk-0.0.4:g $installdir/service/pi-service.sh \n"
-sudo sed -i "s:addpathtojar:$installdir/service/latest/dbunk-0.0.4:g" $installdir/service/pi-service.sh
-printf "** Executing: sudo sed -i s:ReplaceConfigLocation:$installdir/service/latest:g $installdir/service/pi-service.sh \n"
-sudo sed -i "s:ReplaceConfigLocation:$installdir/service/latest:g" $installdir/service/pi-service.sh
+printf "** Executing: sudo sed -i s:addpathtojar:$installdir/service/latest/dbunk-0.0.4:g $installdir/service/pi-svr-service.sh \n"
+sudo sed -i "s:addpathtojar:$installdir/service/latest/dbunk-0.0.4:g" $installdir/service/pi-svr-service.sh
+printf "** Executing: sudo sed -i s:ReplaceConfigLocation:$installdir/service/latest:g $installdir/service/pi-svr-service.sh \n"
+sudo sed -i "s:ReplaceConfigLocation:$installdir/service/latest:g" $installdir/service/pi-svr-service.sh
 printf "** Executing: sudo sed -i s:ReplaceDirectoryPath:$installdir/service/latest:g $installdir/service/latest/application.properties \n"
 sudo sed -i "s:ReplaceDirectoryPath:$installdir/service/latest:g" $installdir/service/latest/application.properties
 
 # Move service process file to init.d 
-printf "** Executing: sudo cp $installdir/service/pi-service.sh /etc/init.d/pi-service.sh \n"
-sudo cp $installdir/service/pi-service.sh /etc/init.d/pi-service.sh
-#printf "** Executing: sudo cp $installdir/service/latest/application.properties /etc/init.d/application.properties \n"
-#sudo cp $installdir/service/latest/application.properties /etc/init.d/application.properties
+printf "** Executing: sudo cp $installdir/service/pi-svr-service.sh /etc/init.d/pi-svr-service.sh \n"
+sudo cp $installdir/service/pi-svr-service.sh /etc/init.d/pi-svr-service.sh
 
 # Start the service
 printf "Starting HomePiSecurity Service..."
-printf "** Executing: sudo sh /etc/init.d/pi-service.sh start"
-sudo sh /etc/init.d/pi-service.sh start
+printf "** Executing: sudo sh /etc/init.d/pi-svr-service.sh start"
+sudo sh /etc/init.d/pi-svr-service.sh start
 
 
 # Setup Web Service
