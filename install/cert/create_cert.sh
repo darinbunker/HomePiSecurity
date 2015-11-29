@@ -6,8 +6,17 @@
 # 
 # http://usrportage.de/archives/919-Batch-generating-SSL-certificates.html
 
-installdir=$(dirname $0)
+# First check to make sure all parameters are passed
+if [ $# -ne 2 ]
+  then
+    echo "Two arguments are required for create_cert script"
+    exit 2
+fi
+
+installdir=$1
 echo "create_cert install directory: $installdir"
+inputKey=$2
+echo "input key value: $inputKey"
 
 # Script accepts a single argument, the fqdn for the cert
 DOMAIN="$1"
@@ -64,8 +73,7 @@ openssl x509 -req -days 3650 -in $installdir/$DOMAIN.csr -signkey $installdir/$D
 fail_if_error $?
 
 # Generate the keystore for Tomcat
-#keytool -genkey -alias homepikeystore -dname "$subj_keystore" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -storepass P@Se3u1tyL02k -validity 3650
 #openssl pkcs12 -export -in $DOMAIN.crt -inkey $DOMAIN.key -out $DOMAIN.p12 -name piKeystore -CAfile $DOMAIN.crt -caname root -chain -password pass:P@Se3u1tyL02k
-sudo keytool -genkeypair -alias homepikeystore -dname "$subj_keystore" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore $installdir/homepisecurity.p12 -storepass P@Se3u1tyL02k -validity 3650
+sudo keytool -genkeypair -alias homepikeystore -dname "$subj_keystore" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore $installdir/homepisecurity.p12 -storepass $inputKey -validity 3650
 
 fail_if_error $?
