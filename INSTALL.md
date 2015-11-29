@@ -79,7 +79,10 @@ The installation process will walk through installing the pre-requisites, config
   * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh`
     * Optionally, you can provide a unique password to be used for the MySQL installation (default password is "TheMySQLPass!")
       * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword`
-    * Approximate install time is between 20-30 minutes
+    * Approximate install time is between 20-30 
+1. Configure static IP address for Home Pi Security System
+  * The web configuration requires the location (IP Address) of the Home Pi Security service for continual communication.  
+    * If the IP address of the Home Pi Security system does need to be changed then an update will be required in the config.js file of the web settings. 
 1. Obtain settings values:
   * To use SMS you will need to create an account from Twilio and get the following:
     * Account_SID
