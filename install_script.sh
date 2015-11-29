@@ -23,7 +23,7 @@ sysname=$HOSTNAME
 dbuser="root"
 serverAddress=$(/sbin/ifconfig | grep -e "inet:" -e "addr:" | grep -v "inet6" | grep -v "127.0.0.1" | head -n 1 | awk '{print $2}' | cut -c6-)
 serverPort="8443"
-installdir=$(dirname $0)
+installdir=$(cd $(dirname $0); pwd -P)
 keyPassword=$(head -c 500 /dev/urandom | tr -dc a-z0-9A-Z | head -c 12; echo)
 
 printf "System Name: $sysname\n"
