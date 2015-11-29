@@ -96,7 +96,6 @@ The installation process will walk through installing the pre-requisites, config
 1. Update configuration file for Security Engine
   * edit the file: `/apps/HomePiSecurity/engine/configSettings.py`
   * Update the following sections:
-    * Database connection details
     * SMS Settings
     * Email Settings
 1. Set the GPIO pins for your doors and windows
@@ -113,19 +112,19 @@ The installation process will walk through installing the pre-requisites, config
     * Open a door and re-run display_pin_status.py
   * Third, update the database with the GPIO pin details
     * For each GPIO pin, run the following to insert the pin configuration into the database:
-      * Execute: `sudo python /apps/HomePiSecurity/engine/add_module.py`
+      * Execute: `sudo python /apps/HomePiSecurity/engine/configure_module.py`
         * Follow the prompts of the script to provide the details needed to insert into the database
 1. Configure system users and security schedules
   * A default user account has been added to the system.  Since the password is already hashed you need to will need to update the existing user.
     * Execute this command to update the default admin account (You need to replace your email and sms_number):
-      * `sudo python /apps/HomePiSecurity/engine/update_admin.py`
+      * `sudo python /apps/HomePiSecurity/engine/configure_admin_settings.py`
         * Follow the prompts to complete the update
         * The default password for the admin user is 123456.
 1. Start Security System Service
   * Start the System
-    * Execute: `sudo sh /etc/init.d/armed-engine.sh start`
+    * Execute: `sudo sh /etc/init.d/pi-svr-engine.sh start`
   * Check service status
-    * Execute: `sudo sh /etc/init.d/armed-engine.sh status`
+    * Execute: `sudo sh /etc/init.d/pi-svr-engine.sh status`
 
 
 
