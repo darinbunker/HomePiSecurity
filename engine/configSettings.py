@@ -8,15 +8,15 @@ DB_DATABASE = "HomeSecuritySystem"
 
 # SMS Settings - Only Twilio is supported with this version
 # The following values are examples of what is expected
-ACCOUNT_SID = "3fef3120eb9a5ACfc2e2eeac6a61b85ffb"
-AUTH_TOKEN = "d8dc6fab93b37dd4b28abd468555b5a8"
-TWILIO_NUMBER = "+18015559060"
+ACCOUNT_SID = "ReplaceSMSAccountID"
+AUTH_TOKEN = "ReplaceSMSAuthToken"
+TWILIO_NUMBER = "ReplaceSMSNumber"
 
 # Email Settings
-EMAIL_SMTP = "smtp.gmail.com:587"
-EMAIL_SEND_ACCT = "useremailsend@gmail.com"
-EMAIL_PWD = "88499300300"
-EMAIL_FROM = "emailsenderfrom@gmail.com"
+EMAIL_SMTP = "ReplaceSMTPServername:ReplaceSMTPServerPort"
+EMAIL_SEND_ACCT = "ReplaceEmailSendAccount"
+EMAIL_PWD = "ReplaceEmailAccountPassword"
+EMAIL_FROM = "ReplaceEmailFromAccount"
 
 # Siren Settings.  
 # If you have a Siren enabled you will need to provide
