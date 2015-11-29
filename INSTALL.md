@@ -76,9 +76,9 @@ The installation process will walk through installing the pre-requisites, config
       * `sudo apt-get upgrade -y --force-yes -qq`
     * or you can execute a script provided `sudo sh /apps/HomePiSecurity/install/update_system_script.sh`
 1. Execute the install script
-  * Execute: `sudo sh /apps/HomePiSecurity/install/install_script.sh`
+  * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh`
     * Optionally, you can provide a unique password to be used for the MySQL installation (default password is "TheMySQLPass!")
-      * `sudo sh /apps/HomePiSecurity/install/install_script.sh MyPassword`
+      * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword`
     * Approximate install time is between 20-30 minutes
 1. Obtain settings values:
   * To use SMS you will need to create an account from Twilio and get the following:
