@@ -76,9 +76,9 @@ The installation process will walk through installing the pre-requisites, config
       * `sudo apt-get upgrade -y --force-yes -qq`
     * or you can execute a script provided `sudo sh /apps/HomePiSecurity/install/update_system_script.sh`
 1. Execute the install script
-  * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh`
+  * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh >> install.log`
     * Optionally, you can provide a unique password to be used for the MySQL installation (default password is "TheMySQLPass!")
-      * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword`
+      * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword >> install.log`
     * Approximate install time is between 15-20
     * You can test the installation by navigating to the following URLs from a web browser (since the configured SSL uses a self-signed certificate you will need to bypass the browser security) :
       * `https://[HomePiSecurity IP Address]` - You should see a login in screen
