@@ -61,7 +61,7 @@ The installation process will walk through installing the pre-requisites, config
     * Execute: `ssh pi@10.0.0.100`
       * use the password for the pi user
 1. Get the HomePiSecurity Code
-  * Create the directory on the RaspberryPi
+  * Create the directory on the HomePiSecurity applications:
   * Commands to execute:
     * `cd /`
     * `sudo mkdir apps`
