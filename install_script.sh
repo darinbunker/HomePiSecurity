@@ -25,6 +25,7 @@ serverAddress=$(/sbin/ifconfig | grep -e "inet:" -e "addr:" | grep -v "inet6" | 
 serverPort="8443"
 installdir=$(cd $(dirname $0); pwd -P)
 keyPassword=$(head -c 500 /dev/urandom | tr -dc a-z0-9A-Z | head -c 12; echo)
+tokenKey=$(head -c 500 /dev/urandom | tr -dc a-z0-9A-Z | head -c 32; echo)
 
 printf "System Name: $sysname\n"
 printf "DB User: $dbuser\n"
@@ -149,10 +150,12 @@ printf "** Executing: sudo sed -i s:ReplaceConnectionPassword:$MySQLPass:g $inst
 sudo sed -i "s:ReplaceConnectionPassword:$MySQLPass:g" $installdir/service/latest/application.properties
 printf "** Executing: sudo sed -i s:ReplaceKeystorePassword:$keyPassword:g $installdir/service/latest/application.properties \n"
 sudo sed -i "s:ReplaceKeystorePassword:$keyPassword:g" $installdir/service/latest/application.properties
+printf "** Executing: sudo sed -i s:ReplaceTokenKey:$tokenKey:g $installdir/service/latest/application.properties \n"
+sudo sed -i "s:ReplaceTokenKey:$tokenKey:g" $installdir/service/latest/application.properties
 
 # Update the service process
-printf "** Executing: sudo sed -i s:addpathtojar:$installdir/service/latest/dbunk-0.0.4:g $installdir/service/pi-svr-service.sh \n"
-sudo sed -i "s:addpathtojar:$installdir/service/latest/dbunk-0.0.4:g" $installdir/service/pi-svr-service.sh
+printf "** Executing: sudo sed -i s:addpathtojar:$installdir/service/latest/pi-service:g $installdir/service/pi-svr-service.sh \n"
+sudo sed -i "s:addpathtojar:$installdir/service/latest/pi-service:g" $installdir/service/pi-svr-service.sh
 printf "** Executing: sudo sed -i s:ReplaceConfigLocation:$installdir/service/latest:g $installdir/service/pi-svr-service.sh \n"
 sudo sed -i "s:ReplaceConfigLocation:$installdir/service/latest:g" $installdir/service/pi-svr-service.sh
 printf "** Executing: sudo sed -i s:ReplaceDirectoryPath:$installdir/service/latest:g $installdir/service/latest/application.properties \n"
