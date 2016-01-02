@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" ng-app="auth">
+  <head>
+  	<meta charset="UTF-8">
+  	<title>Pi Home Security System</title>
+    <link rel="stylesheet" href="css/angular-material.min.css" />
+    <link rel="stylesheet" href="css/opensans.css" type='text/css'>
+    <link rel="stylesheet" href="css/app.css" />
+    
+  </head>
+  <body layout="column" layout-align="top center">
+    
+    <div layout="column", layout-align="center center", layout-fill ng-controller="LoginController as LoginCtrl">
+      <div class="loginBox md-whiteframe-z1", layout="column">
+        <md-toolbar>
+          <h2 class="md-toolbar-tools"><span>Login</span></h2>
+        </md-toolbar>
+        <md-content class="md-padding", layout="column">
+          <md-input-container>
+            <label>Email Address</label>
+            <input type="email" name="username" ng-model="credentials.username" required/>
+          </md-input-container>
+          <md-input-container>
+            <label>Password</label>
+            <input type="password" name="password" ng-model="credentials.password" required/>
+          </md-input-container>
+        </md-content>
+        <div layout="row" layout-align="center center" style="padding-top:20px;">
+          <md-button class="md-raised md-primary" ng-click="login()">
+            Login
+          </md-button>
+          <div flex></div>
+        </div>
+      </div>
+    </div>
+    
+    <script src="js/angular.js"></script>
+    <script src="js/angular-route.js"></script>
+    <script src="js/angular-animate.min.js"></script>
+    <script src="js/angular-aria.min.js"></script>
+    <script src="js/angular-material.min.js"></script>
+    <script src="js/angular-cookies.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    
+  </body>
+</html>

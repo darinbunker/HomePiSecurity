@@ -1,97 +1,84 @@
+var app = angular.module('app', ['ngRoute', 'ngMaterial', 'ngCookies']).config(function($locationProvider, $routeProvider, $filterProvider, $provide, $httpProvider, $cookiesProvider, $windowProvider){
 
-var app = angular.module('app', ['ngRoute', 'ngMaterial', 'ngCookies']).config(function($locationProvider, $routeProvider, $filterProvider){
+    $routeProvider.when('/state', {
+      templateUrl: 'templates/state.html'
+    });
+    $routeProvider.when('/schedules', {
+      templateUrl: 'templates/schedules.html'
+    });
+    $routeProvider.when('/users', {
+      templateUrl: 'templates/users.html'
+    });
+    $routeProvider.when('/configuration', {
+      templateUrl: 'templates/configuration.html'
+    });
+    $routeProvider.otherwise({ redirectTo : '/state' });
 
-		$routeProvider.when('/login', {
-			templateUrl: 'templates/login.html',
-			controller: 'LoginController'
-		});
-		$routeProvider.when('/state', {
-			templateUrl: 'templates/state.html',
-			controller: 'StateController'
-		});
-		$routeProvider.when('/schedules', {
-			templateUrl: 'templates/schedules.html',
-			controller: 'ScheduleController'
-		});
-		$routeProvider.when('/users', {
-			templateUrl: 'templates/users.html',
-			controller: 'UserController'
-		});
-		$routeProvider.when('/configuration', {
-			templateUrl: 'templates/configuration.html',
-			controller: 'ConfigurationController'
-		});
-		$routeProvider.otherwise({ redirectTo : '/login' });
+    $filterProvider.register("schedule_day", function() {
+          return function(dayOfWeek) {
+              returnVal = "";
+              if(dayOfWeek === 0) {
+                  returnVal = "Sunday";
+              } else if (dayOfWeek === 1) {
+                  returnVal = "Monday";
+              } else if (dayOfWeek === 2) {
+                  returnVal = "Tuesday";
+              } else if (dayOfWeek === 3) {
+                  returnVal = "Wednesday";
+              } else if (dayOfWeek === 4) {
+                  returnVal = "Thursday";
+              } else if (dayOfWeek === 5) {
+                  returnVal = "Friday";
+              } else if (dayOfWeek === 6) {
+                  returnVal = "Saturday";
+              } else {
+                returnVal = "None";
+              }
+              return returnVal;
+          };
+      });
 
-		$filterProvider.register("schedule_day", function() {
-	        return function(dayOfWeek) {
-	            returnVal = "";
-	            if(dayOfWeek === 0) {
-	                returnVal = "Sunday";
-	            } else if (dayOfWeek === 1) {
-	                returnVal = "Monday";
-	            } else if (dayOfWeek === 2) {
-	                returnVal = "Tuesday";
-	            } else if (dayOfWeek === 3) {
-	                returnVal = "Wednesday";
-	            } else if (dayOfWeek === 4) {
-	                returnVal = "Thursday";
-	            } else if (dayOfWeek === 5) {
-	                returnVal = "Friday";
-	            } else if (dayOfWeek === 6) {
-	                returnVal = "Saturday";
-	            } else {
-	            	returnVal = "None";
-	            }
-	            return returnVal;
-        	};
-    	});
+      $filterProvider.register("schedule_minute", function() {
+          return function(inputMinute) {
+              returnVal = "";
+              if(inputMinute.toString().length == 2) {
+                  returnVal = inputMinute;
+              } else if (inputMinute.toString().length == 1) {
+                  returnVal = "0" + inputMinute;
+              } else {
+                returnVal = inputMinute;
+              }
+              return returnVal;
+          };
+      });
 
-    	$filterProvider.register("schedule_minute", function() {
-	        return function(inputMinute) {
-	            returnVal = "";
-	            if(inputMinute.toString().length == 2) {
-	                returnVal = inputMinute;
-	            } else if (inputMinute.toString().length == 1) {
-	                returnVal = "0" + inputMinute;
-	            } else {
-	            	returnVal = inputMinute;
-	            }
-	            return returnVal;
-        	};
-    	});
+    var $window = $windowProvider.$get();
+    var $cookies = $cookiesProvider.$get();
 
-	});
+    //Set Http Configurations and Common Error handling
+    $httpProvider.defaults.headers.common['Authorization'] = $cookies['hssid'];
 
-app.factory('AuthenticationService', function($location, $http, $cookies, NavigationService){
-	return {
-		login: function(credentials, authtoken){
-			// First send the credentials to the service for checking
-			$http.post(url + "/authenticate", {username: credentials.username, password: credentials.password})
-			.success(function(response){
-				authtoken = response;
+    $provide.factory('BaseHttpInterceptor', function ($q) {
+      return {
+        // On response failture
+        responseError: function (rejection) {
+          // Return the promise rejection.
+          if (rejection.data.exception == 'javax.servlet.ServletException' && rejection.data.message == 'Missing or invalid Authorization header.'){
+            //Clear cookies and logout
+            delete $cookies['hssid'];
+            $window.location.href = 'login.html';
+          } else if (rejection.data.exception == 'io.jsonwebtoken.ExpiredJwtException') {
+            delete $cookies['hssid'];
+            $window.location.href = 'login.html';
+          }
+          return $q.reject(rejection);
+        }
+      };
+    });
 
-				if (authtoken.authorized){
-					NavigationService.setLoginStatus(true);
-					//set cookies to show navigation
-					var cookieDate = new Date();
-					$cookies.showNavigation = true;
-					$cookies.showNavigationExpire = cookieDate;
+    $httpProvider.interceptors.push('BaseHttpInterceptor');
 
-					$location.path('/state');
-				};
-				credentials.password = undefined;
-			});
-		},
-		logout: function(authtoken){
-			//authtoken = undefined;
-			$cookies['navtab'] = 0;
-			$cookies['navtabexpire'] = undefined;
-			//NavigationService.setLoginStatus(false);
-    		$location.path('/login');
-		}
-	};
-});
+  });
 
 app.service('TransferService', function() {
   var ItemList;
@@ -111,949 +98,674 @@ app.service('TransferService', function() {
   };
 });
 
-app.service('NavigationService', function() {
-	var loginStatus = false;
-	var currentTab = 0;
+app.service('SessionService', function(){
+  var logout = function($cookies, $window){
+    //Invalidate the authentication token
+    delete $cookies['hssid'];
+    //Redirect to login
+    $window.location.href = 'login.html';
+  }
 
-	var navTabs = [
-		    { index: 0, type: 'state', route: '/state' },
-		    { index: 1, type: 'schedules', route: '/schedules' },
-		    { index: 2, type: 'users', route: '/users' },
-		    { index: 3, type: 'configuration', route: '/configuration' },
-		    { index: 4, type: 'logout', route: '/logout' }
-		  ];
-
-	var setLoginStatus = function(newObj) {
-		loginStatus = newObj;
-	}
-
-	var getLoginStatus = function() {
-		return loginStatus;
-	}
-
-	var getNavTabs = function() {
-		return navTabs;
-	}
-
-	var setCurrentTab = function(newObj) {
-		currentTab = newObj;
-	}
-
-	var getCurrentTab = function() {
-		return currentTab;
-	}
-
-	return {
-		setLoginStatus: setLoginStatus,
-		getLoginStatus: getLoginStatus,
-		getNavTabs: getNavTabs,
-		setCurrentTab: setCurrentTab,
-		getCurrentTab: getCurrentTab
-	};
+  return {
+    logout: logout
+  };
 });
 
-app.controller('StateController', function($scope, $http, $location, AuthenticationService, NavigationService){
-	init();
+app.controller('BaseController', function($scope, $mdBottomSheet, $mdSidenav, $mdDialog, $location, $http, SessionService, $cookies, $window){
+  init();
 
-	function init() {
-	  	//$scope.logout = logout;
-	  	$scope.setArmed = setArmed;
-	    $scope.loadState = loadState;
-	    $scope.loadBackground = loadBackground;
-	    //$scope.routeNav = routeNav;
+  function init() {
+    $scope.toggleSearch = toggleSearch;
+    $scope.toggleSidenav = toggleSidenav;
+    $scope.loadBaseState = loadBaseState;
+    $scope.navigateAction = navigateAction;
+    $scope.logout = logout;
 
-	    setLoginStatus();
+    //Load default data and users
+    loadLoggedInUser();
+    setDefaultData();
 
-	    //load state for first execution
-    	$scope.loadState();
-	}
+    //load first template
+    loadBaseState();
+  }
 
-	function setLoginStatus () {
-		NavigationService.setLoginStatus(true);
-		NavigationService.setCurrentTab(0);
-	}
+  function loadLoggedInUser(){
+    //First load the data from the service
+    $http({
+        method: 'GET',
+        url: url + '/api/user'
+      }).then(function(response){
+        $scope.loggedInUser = response.data;
+      });
+  }
 
-	// function logout(){
-	// 	AuthenticationService.logout($scope.authtoken);
-	// }
+  function logout(){
+    SessionService.logout($cookies, $window);
+  }
+
+  function navigateAction(route){
+    $scope.data.selectedIndex = 0;
+    $location.path('/'+route);
+  }
+
+  function loadBaseState(){
+    $location.path('/state');
+  }
+
+  function toggleSearch(element){
+    $scope.showSearch = !$scope.showSearch;
+  }
+
+  function toggleSidenav(menuId){
+    $mdSidenav(menuId).toggle();
+  }
+
+  function setDefaultData(){
+    // Set default state:
+    $scope.alert = '';
+
+    $scope.showTabs = true;
+
+    // Menu items
+    $scope.menu = [
+      {
+        route : 'state',
+        title: 'Status',
+        icon: 'communication:ic_message_24px' 
+      },
+      {
+        route : 'schedules',
+        title: 'Schedules',
+        icon: 'action:ic_dashboard_24px'
+      },
+      {
+        route : 'users',
+        title: 'Users',
+        icon: 'social:ic_group_24px'
+      },
+      {
+        route : 'configuration',
+        title: 'Settings',
+        icon: 'action:ic_settings_24px'
+      }
+    ];
+  }
+
+});
+
+app.controller('StateController', function($scope, $http, $location, $cookies){
+  init();
+
+  function init() {
+      $scope.setArmed = setArmed;
+      $scope.loadState = loadState;
+      $scope.loadBackground = loadBackground;
+
+      $scope.$parent.showTabs = false;
+      // if(!$scope.$$phase) {
+      //   $scope.$parent.$apply();
+      // }
+
+      loadState();
+  }
 
     function setArmed(state, type){
-    	//get the module ID and state
-    	//types:
-    	// - 0: Disarm, 1: Arm and Hold, 2: Arm Temporary
-    	var putURL = "";
-    	// Determine the endpoint
-    	if (type == 0){
-    		// need to determine if disable is required
-    		if (state.active_override > 0) {
-    			putURL += "/state/override/" + state.id + "/0";	
-    		} else if (state.active_schedule > 0) {
-    			putURL += "/state/deactivate/" + state.id + "/1";
-    		}
-    	} else if (type == 1) {
-    		putURL += "/state/override/" + state.id + "/1";
-    	} else if (type == 2) {
-    		putURL += "/state/override/" + state.id + "/2";
-    	}
-    	
-    	$http.put(url + putURL)
-			.success(function (data) {
-    			//console.log('success: ' + data)
-    			//Reload state
-    			$scope.loadState();
-			})
+      //get the module ID and state
+      //types:
+      // - 0: Disarm, 1: Arm and Hold, 2: Arm Temporary
+      var putURL = "";
+      // Determine the endpoint
+      if (type == 0){
+        // need to determine if disable is required
+        if (state.active_override > 0) {
+          putURL += "/api/state/override/" + state.id + "/0"; 
+        } else if (state.active_schedule > 0) {
+          putURL += "/api/state/deactivate/" + state.id + "/1";
+        }
+      } else if (type == 1) {
+        putURL += "/api/state/override/" + state.id + "/1";
+      } else if (type == 2) {
+        putURL += "/api/state/override/" + state.id + "/2";
+      }
+
+      $http({
+        method: 'PUT',
+        url: url + putURL
+      }).then(function(response){
+        $scope.loadState();
+      });
+
     }
 
     function loadState(){
-    	$http.get(url + "/state")
-	    .success(function(response) {
-	    	$scope.states = response;
-	    	//Load the current state of the system
-	    	determineArmedState();
-	    });
+      // Get current state from api
+      $http({
+        method: 'GET',
+        url: url + '/api/state'
+      }).then(function(response){
+        $scope.states = response.data;
+        //Load the current state of the system
+        determineArmedState();
+      });
+
     }
 
     function loadBackground(){
-    	$scope.showBackground = 1;
+      $scope.showBackground = 1;
     }
-
- //    function routeNav(type){
-	// 	var route = "";
-
-	// 	if (type == 'state') {
-	// 		route = "/state";
-	// 	} else if (type == 'schedules') {
-	// 		route = "/schedules";
-	// 	} else if (type == 'users') {
-	// 		route = "/users";
-	// 	} else if (type == "configuration") {
-	// 		route = "/configuration";
-	// 	}
-
-	// 	if (route != "") {
-	// 		$location.path(route);	
-	// 	}
-		
-	// }
 
     function determineArmedState(){
-    	//Check the state object to determine the armed state - Loop through the state objects
+      //Check the state object to determine the armed state - Loop through the state objects
 
-		for (var i = 0; i < $scope.states.length; i++) {
-			var armType;
-		    // - First check if the active_override is set
-		    $scope.states[i].armed = "not-armed";
-	    	if ($scope.states[i].active_override == 1){
-	    		$scope.states[i].armedDisplay = "ARMED - Hold";
-	    		armType = "arm-hold";
-	    	} else if ($scope.states[i].active_override == 2) {
-	    		$scope.states[i].armedDisplay = "ARMED";
-	    		armType = "arm-temp";
-	    	} else if ($scope.states[i].active_schedule > 0) {
-	    		// Check to make sure there isn't a deactivate set
-	    		if ($scope.states[i].deactivate_override > 0){
-	    			$scope.states[i].armedDisplay = "DISARMED";
-	    		} else {
-	    			$scope.states[i].armedDisplay = "ARMED";
-	    			armType = "arm-schedule";
-	    		}
-	    	} else {
-	    		$scope.states[i].armedDisplay = "DISARMED";
-	    	}
+      for (var i = 0; i < $scope.states.length; i++) {
+        var armType = "";
+          // - First check if the active_override is set
+          $scope.states[i].armed = "not-armed";
+          if ($scope.states[i].active_override == 1){
+            $scope.states[i].armedDisplay = "ARMED & HOLD";
+            armType = "arm-hold";
+          } else if ($scope.states[i].active_override == 2) {
+            $scope.states[i].armedDisplay = "ARMED";
+            armType = "arm-temp";
+          } else if ($scope.states[i].active_schedule > 0) {
+            // Check to make sure there isn't a deactivate set
+            if ($scope.states[i].deactivate_override > 0){
+              $scope.states[i].armedDisplay = "DISARMED";
+            } else {
+              $scope.states[i].armedDisplay = "ARMED";
+              armType = "arm-schedule";
+            }
+          } else {
+            $scope.states[i].armedDisplay = "DISARMED";
+          }
 
-	    	if (armType){
-	    		$scope.states[i].armed = armType;
-	    	}
-		}
+          if (armType){
+            $scope.states[i].armed = armType;
+          }
+      }
     }
 
 });
 
-app.controller('LoginController', function($scope, $http, AuthenticationService){
+app.controller('ScheduleController', function($scope, $http, $location, $filter, $mdDialog, TransferService){
 
-	init();
+  init();
 
-	function init(){
-		//window.scope = $scope;
-		$scope.credentials = { username: "", password: ""};
-		$scope.authtoken = {authorized: "", username: "", token: ""};
+  function init() {
+    $scope.loadSchedules = loadSchedules;
+    $scope.deleteSchedule = deleteSchedule;
+    $scope.saveSchedule = saveSchedule;
+    $scope.createSchedule = createSchedule;
+    $scope.confirmRemove = confirmRemove;
+    $scope.configureUpdate = configureUpdate;
+    $scope.getAppModules = getAppModules;
+    $scope.getAlertRules = getAlertRules;
+    $scope.cancel = cancel;
+    $scope.resetSchedule = resetSchedule;
+    $scope.addNew = addNew;
 
-		$scope.login = login;
-	}
+    $scope.$parent.showTabs = true;
 
-	function login(){
-		AuthenticationService.login($scope.credentials, $scope.authtoken);
-	}
-});
+      
+    //Load the schedules and default data for the first execution
+    loadSchedules();
+    loadDefaultData();
+  }
 
-app.controller('ScheduleController', function($scope, $http, $location, $filter, $mdDialog, TransferService, AuthenticationService, NavigationService){
+  function addNew(){
+    //Clear out the target schedule
+      if (!angular.isUndefined($scope.targetSchedule)){
+        delete $scope.targetSchedule
+      }
+      //Change the tab to the update tab
+      $scope.$parent.data.selectedIndex = 1;
+  }
 
-	init();
+  function configureUpdate(schedule){
+    //First load schedule into Target Schedule
+    $scope.targetSchedule = angular.copy(schedule);
+    //Change the tab to the update tab
+    $scope.$parent.data.selectedIndex = 1;
+  }
 
-	function init() {
-	  	$scope.loadSchedules = loadSchedules;
-	  	//$scope.logout = logout;
-	  	//$scope.routeNav = routeNav;
-	    $scope.deleteSchedule = deleteSchedule;
-	    $scope.toggleModal = toggleModal;
-	    $scope.saveSchedule = saveSchedule;
-	    $scope.createSchedule = createSchedule;
-	    $scope.setCreate = setCreate;
-	    $scope.showModifyDialog = showModifyDialog;
-	    $scope.confirmRemove = confirmRemove;
-	    
-	    //Load the schedules for the first execution
-		$scope.loadSchedules();
-		setLoginStatus();
-	}
+  function loadSchedules(){
+    //Get the latest schedules and load them into scope
+    $http({
+        method: 'GET',
+        url: url + '/api/schedules'
+      }).then(function(response){
+        $scope.schedules = response.data;
+      });
+  }
 
-	function setLoginStatus () {
-		NavigationService.setLoginStatus(true);
-		NavigationService.setCurrentTab(1);
-	}
+  function deleteSchedule(id){
+    var sendURL = "/api/schedule/delete/" + id;
+    $http({
+        method: 'GET',
+        url: url + sendURL
+      }).then(function(response){
+        loadSchedules();
+        resetSchedule();
+      });
+  }
 
-	// function logout(){
-	// 	AuthenticationService.logout($scope.authtoken);
-	// }
+  function resetSchedule(){
+    //Clear out the target schedule
+      if (!angular.isUndefined($scope.targetSchedule)){
+        delete $scope.targetSchedule
+      }
+      //Change the tab to the update tab
+      $scope.$parent.data.selectedIndex = 0;
+  }
 
-	function loadSchedules(){
-		//Get the latest schedules and load them into scope
-		$http.get(url + "/schedules")
-			.success(function(response){
-				$scope.schedules = response;
-			});
-	}
+  function saveSchedule(schedule){
+    
+    //Determine type - if create then send to create new
+    if (!schedule.id) {
+      createSchedule(schedule);
+    } else {
+      //First create the JSON to be posted
+      var submission = { id: schedule.id, schedule_name: "", start_day: schedule.start_day, 
+        start_hour: schedule.start_hour, start_minute: schedule.start_minute, 
+        end_day: schedule.end_day, end_hour: schedule.end_hour, 
+        end_minute: schedule.end_minute, alert_rule_id: schedule.alert_rule_id, active: schedule.active };
 
-	// function routeNav(type){
-	// 	var route = "";
+      //Send submission to endpoint
+      $http({
+          method: 'POST',
+          url: url + '/api/schedule/update',
+          data: submission
+        }).then(function(response){
+          loadSchedules();
+          resetSchedule();
+        });
+    }
+  }
 
-	// 	if (type == 'state') {
-	// 		route = "/state";
-	// 	} else if (type == 'schedules') {
-	// 		route = "/schedules";
-	// 	} else if (type == 'users') {
-	// 		route = "/users";
-	// 	} else if (type == "configuration") {
-	// 		route = "/configuration";
-	// 	}
+  function createSchedule(schedule){
+    //First create the JSON to be posted
+    var submission = { app_module_id: schedule.app_module_id, 
+      schedule_name: "",
+      start_day: schedule.start_day, 
+      start_hour: schedule.start_hour, 
+      start_minute: schedule.start_minute, 
+      end_day: schedule.end_day, 
+      end_hour: schedule.end_hour, 
+      end_minute: schedule.end_minute, 
+      alert_rule_id: schedule.alert_rule_id, 
+      active:1 };
+    //Send submission to endpoint
+    $http({
+          method: 'POST',
+          url: url + '/api/schedule/create',
+          data: submission
+        }).then(function(response){
+          loadSchedules();
+          resetSchedule();
+        });
+  }
 
-	// 	if (route != "") {
-	// 		$location.path(route);	
-	// 	}
-	// }
+  function confirmRemove(schedule, ev) {
 
-	function deleteSchedule(id){
-		var sendURL = "/schedule/delete/" + id;
-		$http.get(url + sendURL)
-			.success(function (data) {
-	    		//Set the scope with the changed values
-	    		loadSchedules();
-			})
-	}
+    // Appending dialog to document.body to cover sidenav in docs app
+      var confirm = $mdDialog.confirm()
+        .title('Confirm Deletion')
+        .content('Are you sure you want to delete this schedule?')
+        .ariaLabel('Confirm Delete')
+        .ok('Delete')
+        .cancel('cancel')
+        .targetEvent(ev);
+      $mdDialog.show(confirm).then(function() {
+        //Delete the schedule
+        deleteSchedule(schedule.id);
+      }, function() {
+        //No action
+      });
+  }
 
-	function toggleModal(schedule, ev){
-		TransferService.addItem(angular.copy(schedule));
-		showModifyDialog(ev);
-	}
+  function getAppModules(){
+      $http({
+        method: 'GET',
+        url: url + "/api/state"
+      }).then(function(response){
+        $scope.modules = response.data;
+      });
+    }
 
-	function saveSchedule(schedule){
-		
-		//Determine type - if create then send to create new
-		if (!schedule.id) {
-			createSchedule(schedule);
-		} else {
-			//First create the JSON to be posted
-			var submission = { id: schedule.id, start_day: schedule.start_day, 
-				start_hour: schedule.start_hour, start_minute: schedule.start_minute, 
-				end_day: schedule.end_day, end_hour: schedule.end_hour, 
-				end_minute: schedule.end_minute, alert_rule_id: schedule.alert_rule_id, active: schedule.active };
+    function getAlertRules(){
+      $http({
+        method: 'GET',
+        url: url + "/api/rules"
+      }).then(function(response){
+        $scope.alertRules = response.data;
+      });
+    }
 
-			//Send submission to endpoint
-			$http.post(url + "/schedule/update", submission)
-				.success(function(response){
-					//Redirect to schedule
-					loadSchedules();
-				});
-		}
-	}
+    function loadDefaultData(){
 
-	function createSchedule(schedule){
-		//First create the JSON to be posted
-		var submission = { app_module_id: schedule.app_module_id, 
-			start_day: schedule.start_day, 
-			start_hour: schedule.start_hour, 
-			start_minute: schedule.start_minute, 
-			end_day: schedule.end_day, 
-			end_hour: schedule.end_hour, 
-			end_minute: schedule.end_minute, 
-			alert_rule_id: schedule.alert_rule_id, 
-			active:1 };
-		//Send submission to endpoint
-		$http.post(url + "/schedule/create", submission)
-			.success(function(response){
-				//Redirect to schedule
-				//$scope.modalShown = !$scope.modalShown;
-				loadSchedules();
-			});
-	}
+      // Load data from db
+      getAppModules();
+      getAlertRules();
 
-	function setCreate(ev) {
-		TransferService.addItem({});
-		showModifyDialog(ev);
-	}
+      var weekDays = [
+            { id: 0, dayOfWeek: 'Sunday' },{ id: 1, dayOfWeek: 'Monday' },{ id: 2, dayOfWeek: 'Tuesday' },{ id: 3, dayOfWeek: 'Wednesday' },
+            { id: 4, dayOfWeek: 'Thursday' },{ id: 5, dayOfWeek: 'Friday' },{ id: 6, dayOfWeek: 'Saturday' }
+          ];
+          var hoursInDay = [
+            { id: 0, hourInDay: '12:00 AM' },{ id: 1, hourInDay: '1:00 AM' },{ id: 2, hourInDay: '2:00 AM' },{ id: 3, hourInDay: '3:00 AM' },
+            { id: 4, hourInDay: '4:00 AM' },{ id: 5, hourInDay: '5:00 AM' },{ id: 6, hourInDay: '6:00 AM' },{ id: 7, hourInDay: '7:00 AM' },
+            { id: 8, hourInDay: '8:00 AM' },{ id: 9, hourInDay: '9:00 AM' },{ id: 10, hourInDay: '10:00 AM' },{ id: 11, hourInDay: '11:00 AM' },
+            { id: 12, hourInDay: '12:00 PM' },{ id: 13, hourInDay: '1:00 PM' },{ id: 14, hourInDay: '2:00 PM' },{ id: 15, hourInDay: '3:00 PM' },
+            { id: 16, hourInDay: '4:00 PM' },{ id: 17, hourInDay: '5:00 PM' },{ id: 18, hourInDay: '6:00 PM' },{ id: 19, hourInDay: '7:00 PM' },
+            { id: 20, hourInDay: '8:00 PM' },{ id: 21, hourInDay: '9:00 PM' },{ id: 22, hourInDay: '10:00 PM' },{ id: 23, hourInDay: '11:00 PM' }
+          ];
+          var minutesInHour = [
+            { id: 0, minuteInHour: '00' },{ id: 5, minuteInHour: '05' },{ id: 10, minuteInHour: '10' },{ id: 15, minuteInHour: '15' },
+            { id: 20, minuteInHour: '20' },{ id: 25, minuteInHour: '25' },{ id: 30, minuteInHour: '30' },{ id: 35, minuteInHour: '35' },
+            { id: 40, minuteInHour: '40' },{ id: 45, minuteInHour: '45' },{ id: 50, minuteInHour: '50' },{ id: 55, minuteInHour: '55' }
+          ];
+          $scope.daysOfWeek = weekDays;
+          $scope.hoursInDay = hoursInDay;
+          $scope.minutesInHour = minutesInHour;
+    }
 
-	function showModifyDialog(inputEvent) {
-		$mdDialog.show({
-	      controller: DialogController,
-	      templateUrl: 'templates/schedulemodify.html',
-	      targetEvent: inputEvent,
-	    })
-	    .then(function(answer) {
-	      saveSchedule(answer);
-	    }, function() {
-	      //No action
-	    });
-	}
-
-	function confirmRemove(schedule, ev) {
-
-		// Appending dialog to document.body to cover sidenav in docs app
-	    var confirm = $mdDialog.confirm()
-	      .title('Confirm Deletion')
-	      .content('Are you sure you want to delete this schedule?')
-	      .ariaLabel('Confirm Delete')
-	      .ok('Delete')
-	      .cancel('cancel')
-	      .targetEvent(ev);
-	    $mdDialog.show(confirm).then(function() {
-	      //Delete the schedule
-	      deleteSchedule(schedule.id);
-	    }, function() {
-	      //No action
-	    });
-	}
-	
-	function DialogController($scope, $mdDialog, TransferService) {
-
-	  init();
-
-	  function init(){
-
-	  	$scope.targetSchedule = TransferService.getItem();
-	  	$scope.hide = hide;
-	  	$scope.cancel = cancel;
-	  	$scope.answer = answer;
-
-	  	getAppModules();
-	  	getAlertRules();
-	  	loadDefaultData();
-	  }
-
-	  function getAppModules(){
-		$http.get(url + "/state")
-			.success(function(response){
-			$scope.modules = response;
-		});
-	  }
-
-	  function getAlertRules(){
-			$http.get(url + "/rules")
-				.success(function(response){
-				$scope.alertRules = response;
-			});
-	  }
-
-	  function loadDefaultData(){
-			var weekDays = [
-	        	{ id: 0, dayOfWeek: 'Sunday' },{ id: 1, dayOfWeek: 'Monday' },{ id: 2, dayOfWeek: 'Tuesday' },{ id: 3, dayOfWeek: 'Wednesday' },
-	        	{ id: 4, dayOfWeek: 'Thursday' },{ id: 5, dayOfWeek: 'Friday' },{ id: 6, dayOfWeek: 'Saturday' }
-	      	];
-	      	var hoursInDay = [
-	      		{ id: 0, hourInDay: '12:00 AM' },{ id: 1, hourInDay: '1:00 AM' },{ id: 2, hourInDay: '2:00 AM' },{ id: 3, hourInDay: '3:00 AM' },
-	        	{ id: 4, hourInDay: '4:00 AM' },{ id: 5, hourInDay: '5:00 AM' },{ id: 6, hourInDay: '6:00 AM' },{ id: 7, hourInDay: '7:00 AM' },
-	        	{ id: 8, hourInDay: '8:00 AM' },{ id: 9, hourInDay: '9:00 AM' },{ id: 10, hourInDay: '10:00 AM' },{ id: 11, hourInDay: '11:00 AM' },
-	        	{ id: 12, hourInDay: '12:00 PM' },{ id: 13, hourInDay: '1:00 PM' },{ id: 14, hourInDay: '2:00 PM' },{ id: 15, hourInDay: '3:00 PM' },
-	        	{ id: 16, hourInDay: '4:00 PM' },{ id: 17, hourInDay: '5:00 PM' },{ id: 18, hourInDay: '6:00 PM' },{ id: 19, hourInDay: '7:00 PM' },
-	        	{ id: 20, hourInDay: '8:00 PM' },{ id: 21, hourInDay: '9:00 PM' },{ id: 22, hourInDay: '10:00 PM' },{ id: 23, hourInDay: '11:00 PM' }
-	      	];
-	      	var minutesInHour = [
-	      		{ id: 0, minuteInHour: '00' },{ id: 5, minuteInHour: '05' },{ id: 10, minuteInHour: '10' },{ id: 15, minuteInHour: '15' },
-	        	{ id: 20, minuteInHour: '20' },{ id: 25, minuteInHour: '25' },{ id: 30, minuteInHour: '30' },{ id: 35, minuteInHour: '35' },
-	        	{ id: 40, minuteInHour: '40' },{ id: 45, minuteInHour: '45' },{ id: 50, minuteInHour: '50' },{ id: 55, minuteInHour: '55' }
-	      	];
-	      	$scope.daysOfWeek = weekDays;
-	      	$scope.hoursInDay = hoursInDay;
-	      	$scope.minutesInHour = minutesInHour;
-	  }
-
-	  function hide(){
-	  	$mdDialog.hide();
-	  }
-
-	  function cancel(){
-	  	$mdDialog.cancel();
-	  }
-
-	  function answer(answer){
-	  	$mdDialog.hide(answer);
-	  }
-
-	}
+    function cancel(){
+      resetSchedule();
+    }
 
 });
 
-app.controller('UserController', function($scope, $http, $location, $mdDialog, AuthenticationService, NavigationService, TransferService){
-	
-	var displayPass = "0000000000"
-	init();
+app.controller('UserController', function($scope, $http, $location, $mdDialog, TransferService){
+  
+  var displayPass = "0000000000"
+  init();
 
-	function init(){
-		$scope.loadUsers = loadUsers;
-		//$scope.routeNav = routeNav;
-		$scope.toggleModal = toggleModal;
-		//$scope.logout = logout;
-		$scope.setCreate = setCreate;
-		$scope.saveUser = saveUser;
-		$scope.createUser = createUser;
-		$scope.deleteUser = deleteUser;
-		$scope.showModifyDialog = showModifyDialog;
-		$scope.confirmRemove = confirmRemove;
+  function init(){
+    $scope.loadUsers = loadUsers;
+    $scope.saveUser = saveUser;
+    $scope.createUser = createUser;
+    $scope.deleteUser = deleteUser;
+    $scope.confirmRemove = confirmRemove;
+    $scope.configureUpdate = configureUpdate;
+    $scope.validateInput = validateInput;
+    $scope.cancel = cancel;
+    $scope.resetUser = resetUser;
+    $scope.addNew = addNew;
 
-		setLoginStatus();
-		loadUsers();
-	}
+    $scope.$parent.showTabs = true;
 
-	function processUserData(data){
-		
-		//Loop through the users and set display passwords
-		for (var i = 0; i < data.length; i++) {
-		    data[i].firstPassword = displayPass;
-		    data[i].secondPassword = displayPass;
-		}
-		return data;
-	}
+    loadUsers();
+  }
 
-	function setLoginStatus () {
-		NavigationService.setLoginStatus(true);
-		NavigationService.setCurrentTab(2);
-	}
+  function addNew(){
+    //Clear out the target schedule
+      if (!angular.isUndefined($scope.targetUser)){
+        delete $scope.targetUser
+      }
+      //Change the tab to the update tab
+      $scope.$parent.data.selectedIndex = 1;
+  }
 
-	// function logout(){
-	// 	AuthenticationService.logout($scope.authtoken);
-	// }
+  function resetUser(){
+    //Clear out the target user
+      if (!angular.isUndefined($scope.targetUser)){
+        delete $scope.targetUser
+      }
+      //Change the tab to the update tab
+      $scope.$parent.data.selectedIndex = 0;
+  }
 
-	function loadUsers(){
-    	$http.get(url + "/users")
-	    .success(function(response) {
-	    	$scope.users = processUserData(response);
-	    });
+  function cancel(){
+    resetUser();
+  }
+
+  function validateInput(input){
+    var validated = false;
+    if (input.firstPassword == input.secondPassword){
+      validated = true;
+      $scope.showMessage = false;
+    } else {
+      $scope.displayMessage = "input passwords must match";
+      $scope.showMessage = true;
+    }
+      return validated;
+  }
+
+  function configureUpdate(user){
+    //First load schedule into Target Schedule
+    $scope.targetUser = angular.copy(user);
+    //Change the tab to the update tab
+    $scope.$parent.data.selectedIndex = 1;
+  }
+
+  function processUserData(data){
+    
+    //Loop through the users and set display passwords
+    for (var i = 0; i < data.length; i++) {
+        data[i].firstPassword = displayPass;
+        data[i].secondPassword = displayPass;
+    }
+    return data;
+  }
+
+  function loadUsers(){
+    $http({
+        method: 'GET',
+        url: url + "/api/users"
+      }).then(function(response){
+        $scope.users = processUserData(response.data);
+      });
     }
 
- //    function routeNav(type){
-	// 	var route = "";
+  function createUser(user){
+    var outPassword;
+    var outSMSNumber;
+    var outSendEmail;
+    var outSendSMS;
+    var outActive;
 
-	// 	if (type == 'state') {
-	// 		route = "/state";
-	// 	} else if (type == 'schedules') {
-	// 		route = "/schedules";
-	// 	} else if (type == 'users') {
-	// 		route = "/users";
-	// 	} else if (type == "configuration") {
-	// 		route = "/configuration";
-	// 	}
+    outPassword = user.firstPassword;
+    if (user.sms_number){
+      outSMSNumber = user.sms_number;
+    } else {
+      outSMSNumber = "";
+    }
+    if (user.send_email){
+      outSendEmail = user.send_email;
+    } else {
+      outSendEmail = false;
+    }
+    if (user.send_smsl){
+      outSendSMS = user.send_sms;
+    } else {
+      outSendSMS = false;
+    }
+    if (user.active){
+      outActive = user.active;
+    } else {
+      outActive = true;
+    }
 
-	// 	if (route != "") {
-	// 		$location.path(route);	
-	// 	}
-		
-	// }
+    //First create the JSON to be posted
+    var submission = { id:0, 
+      user_name: user.user_name, 
+      password: outPassword, 
+      sms_number: outSMSNumber, 
+      avatar_id: 0,
+      send_email: outSendEmail, 
+      send_sms: outSendSMS, 
+      user_type: 0,
+      active: outActive };
+    //Send submission to endpoint
+    $http({
+        method: 'POST',
+        url: url + '/api/user/create',
+        data: submission
+      }).then(function(response){
+        loadUsers();
+        resetUser();
+      });
+  }
 
-	function toggleModal(user, ev){
-		TransferService.addItem(angular.copy(user));
-		showModifyDialog(ev);
-	}
+  function saveUser(user){
+    //First, validate input
+    if (validateInput(user)){
+      //Determine type - if create then send to create new
+      if (!user.id) {
+        createUser(user);
+      } else {
+        var submission;
+        //check if password changed
+        if (user.firstPassword != displayPass){
+          //First create the JSON to be posted
+          submission = { id: user.id, 
+            password: user.firstPassword, 
+            sms_number: user.sms_number, 
+            avatar_id: 0,
+            send_email: user.send_email, 
+            send_sms: user.send_sms, 
+            user_type: 0,
+            active: user.active };
+        } else {
+          submission = { id: user.id,  
+            sms_number: user.sms_number, 
+            avatar_id: 0,
+            send_email: user.send_email, 
+            send_sms: user.send_sms, 
+            user_type: 0,
+            active: user.active };
+        }
 
-	function setCreate(ev) {
-		TransferService.addItem({});
-		showModifyDialog(ev);
-	}
+        //Send submission to endpoint
+        $http({
+          method: 'POST',
+          url: url + '/api/user/update',
+          data: submission
+        }).then(function(response){
+          loadUsers();
+          resetUser();
+        });
+      }
+    }
+  }
 
-	function createUser(user){
-		var outPassword;
-		var outSMSNumber;
-		var outSendEmail;
-		var outSendSMS;
-		var outActive;
+  function deleteUser(id){
+    $http({
+        method: 'POST',
+        url: url + '/api/user/delete/' + id
+      }).then(function(response){
+        loadUsers();
+        resetUser();
+      });
+  }
 
-		outPassword = user.firstPassword;
-		if (user.sms_number){
-			outSMSNumber = user.sms_number;
-		} else {
-			outSMSNumber = "";
-		}
-		if (user.send_email){
-			outSendEmail = user.send_email;
-		} else {
-			outSendEmail = false;
-		}
-		if (user.send_smsl){
-			outSendSMS = user.send_sms;
-		} else {
-			outSendSMS = false;
-		}
-		if (user.active){
-			outActive = user.active;
-		} else {
-			outActive = true;
-		}
+  function confirmRemove(user, ev) {
 
-		//First create the JSON to be posted
-		var submission = { id:0, 
-			user_name: user.user_name, 
-			password: outPassword, 
-			sms_number: outSMSNumber, 
-			send_email: outSendEmail, 
-			send_sms: outSendSMS, 
-			active: outActive };
-		//Send submission to endpoint
-		$http.post(url + "/user/create", submission)
-			.success(function(response){
-				//reload users
-				loadUsers();
-			});
-	}
-
-	function saveUser(user){
-		//Determine type - if create then send to create new
-		if (!user.id) {
-			createUser(user);
-		} else {
-			var submission;
-			//check if password changed
-			if (user.firstPassword != displayPass){
-				//First create the JSON to be posted
-				submission = { id: user.id, 
-					password: user.firstPassword, 
-					sms_number: user.sms_number, 
-					send_email: user.send_email, 
-					send_sms: user.send_sms, 
-					active: user.active };
-			} else {
-				submission = { id: user.id,  
-					sms_number: user.sms_number, 
-					send_email: user.send_email, 
-					send_sms: user.send_sms, 
-					active: user.active };
-			}
-
-			//Send submission to endpoint
-			$http.post(url + "/user/update", submission)
-				.success(function(response){
-					//Redirect to schedule
-					loadUsers();
-				});
-		}
-	}
-
-	function deleteUser(id) {
-		var submission = "/user/delete/" + id;
-		//Send submission to endpoint
-		$http.post(url + submission)
-			.success(function(response){
-				//reload users
-				loadUsers();
-			});
-	}
-
-	function showModifyDialog(inputEvent) {
-		$mdDialog.show({
-	      controller: DialogUserController,
-	      templateUrl: 'templates/usermodify.html',
-	      targetEvent: inputEvent,
-	    })
-	    .then(function(answer) {
-	      saveUser(answer);
-	    }, function() {
-	      //No action
-	    });
-	}
-
-	function confirmRemove(user, ev) {
-
-		// Appending dialog to document.body to cover sidenav in docs app
-	    var confirm = $mdDialog.confirm()
-	      .title('Confirm Deletion')
-	      .content('Are you sure you want to delete this user?')
-	      .ariaLabel('Delete User')
-	      .ok('Delete')
-	      .cancel('cancel')
-	      .targetEvent(ev);
-	    $mdDialog.show(confirm).then(function() {
-	      //Delete the schedule
-	      deleteUser(user.id);
-	    }, function() {
-	      //No action
-	    });
-	}
-
-	function DialogUserController($scope, $mdDialog, TransferService) {
-
-	  init();
-
-	  function init(){
-
-	  	$scope.targetUser = TransferService.getItem();
-	  	$scope.hide = hide;
-	  	$scope.cancel = cancel;
-	  	$scope.answer = answer;
-	  	$scope.displayMessage = "";
-	  	$scope.showMessage = false;
-
-	  	//Determine status of user
-	  	if (!$scope.targetUser.id){
-	  		$scope.modifyState = "new";
-	  	} else {
-	  		$scope.modifyState = "update";
-	  	}
-	  }
-
-	  function validateInput(input){
-	  	var validated = false;
-	  	if (input.firstPassword == input.secondPassword){
-	  		validated = true;
-	  		$scope.showMessage = false;
-	  	} else {
-	  		$scope.displayMessage = "input passwords must match";
-	  		$scope.showMessage = true;
-	  	}
-	  	return validated;
-	  }
-
-	  function hide(){
-	  	$mdDialog.hide();
-	  }
-
-	  function cancel(){
-	  	$mdDialog.cancel();
-	  }
-
-	  function answer(answer){
-	  	if (validateInput(answer)){
-	  		$mdDialog.hide(answer);
-	  	}
-	  }
-
-	}
+    // Appending dialog to document.body to cover sidenav in docs app
+      var confirm = $mdDialog.confirm()
+        .title('Confirm Deletion')
+        .content('Are you sure you want to delete this user?')
+        .ariaLabel('Delete User')
+        .ok('Delete')
+        .cancel('cancel')
+        .targetEvent(ev);
+      $mdDialog.show(confirm).then(function() {
+        //Delete the schedule
+        deleteUser(user.id);
+      }, function() {
+        //No action
+      });
+  }
 
 });
 
-app.controller('ConfigurationController', function($scope, $http, $location, AuthenticationService, NavigationService){
-	
-	init();
+app.controller('ConfigurationController', function($scope, $http, $location){
+  
+  init();
 
-	function init(){
-		//$scope.routeNav = routeNav;
-		$scope.toggleModal = toggleModal;
-		//$scope.logout = logout;
-		$scope.loadState = loadState;
-		$scope.resetViewState = resetViewState;
-		$scope.setUpdate = setUpdate;
-		$scope.updateAlerts = updateAlerts;
-		$scope.loadRules = loadRules;
+  function init(){
+    $scope.loadState = loadState;
+    $scope.updateAlerts = updateAlerts;
+    $scope.loadRules = loadRules;
 
-		setLoginStatus();
-		loadRules();
-		loadState();
-	}
+    $scope.$parent.showTabs = false;
 
-	function setLoginStatus () {
-		NavigationService.setLoginStatus(true);
-		NavigationService.setCurrentTab(3);
-	}
+    loadRules();
+    loadState();
+  }
 
-	// function logout(){
-	// 	AuthenticationService.logout($scope.authtoken);
-	// }
-
-
- //    function routeNav(type){
-	// 	var route = "";
-
-	// 	if (type == 'state') {
-	// 		route = "/state";
-	// 	} else if (type == 'schedules') {
-	// 		route = "/schedules";
-	// 	} else if (type == 'users') {
-	// 		route = "/users";
-	// 	} else if (type == "configuration") {
-	// 		route = "/configuration";
-	// 	}
-
-	// 	if (route != "") {
-	// 		$location.path(route);	
-	// 	}
-		
-	// }
-
-	function toggleModal(user, type){
-		
-		if (type === "edit") {
-			$scope.modalType = "edit";
-		} else if (type === "delete") {
-			$scope.modalType = "delete";
-		} 
-
-		$scope.targetUser = user;
-		$scope.modalShown = !$scope.modalShown;
-	}
-
-	function loadState(){
-    	$http.get(url + "/state")
-	    .success(function(response) {
-	    	$scope.state = response;
-	    	$scope.viewType = "view";
-	    });
+  function loadState(){
+    $http({
+        method: 'GET',
+        url: url + "/api/state"
+      }).then(function(response){
+        $scope.state = response.data;
+        $scope.viewType = "view";
+      });
     }
 
-    function resetViewState() {
-    	$scope.viewType = "view";
-    	$scope.targetState = {};
-    }
+  function loadRules(){
+    $http({
+      method: 'GET',
+      url: url + "/api/rules"
+    }).then(function(response){
+      $scope.alertRules = response.data;
+    });
+  }
 
-    function setUpdate(id) {
-    	$scope.targetState = $scope.state[id];
-    	$scope.viewType = "update";
-    }
+  function updateAlerts(alert) {
+      //First create the JSON to be posted
+    var submission = { id:alert.id, override_alert_rule: alert.override_alert_rule, general_alert_rule: alert.general_alert_rule };
+    $http({
+        method: 'POST',
+        url: url + '/api/state/update/alerts',
+        data: submission
+      }).then(function(response){
+        loadState();
+      });
+  }
 
-    function updateAlerts() {
-    	//First create the JSON to be posted
-		var submission = { id:$scope.targetState.id, override_alert_rule: $scope.targetState.override_alert_rule, general_alert_rule: $scope.targetState.general_alert_rule };
-		//Send submission to endpoint
-		$http.post(url + "/state/update/alerts", submission)
-			.success(function(response){
-				loadState();
-				$scope.targetState = {};
-				$scope.viewType = "view";
-			});
-    }
-
-    function loadRules(){
-    	$http.get(url + "/rules")
-	    .success(function(response) {
-	    	$scope.alertRules = response;
-	    });
-    }
-
-
+    
 });
 
-app.controller('NavController', function($scope, $http, $location, $cookies, NavigationService, AuthenticationService){
-	
-	init();
-
-	function init(){
-		$scope.routeNav = routeNav;
-		$scope.loggedIn = loggedIn;
-		$scope.getSelectedIndex = getSelectedIndex;
-
-		setTabNavigation();
-		setNavItems();
-
-		//Check to see if login has been completed to not show
-		checkLoginStatus();
-	}
-
-	function determineDefaultTab(){
-		// Check if cookie exists today
-		var hasExpired = false;
-		var returnTab = 0;
-
-		if ($cookies['navtab']){
-			//Check the expire
-			if ($cookies['navtabexpire']){
-				try {
-					var setCookieExpireDate = new Date($cookies['navtabexpire']);
-
-					if (setCookieExpireDate){
-						var fourHours = 3600000;
-						var currentDate = new Date();
-						//var hours = Math.abs(date1 - date2) / 36e5;
-
-						if ((currentDate - setCookieExpireDate) > fourHours) {
-							//This means the date has expired - So reset the cookies
-							hasExpired = true;
-						}
-					}
-				} catch(err) {
-					setTabCookieExpireDate();
-				}
-			} 
-				
-			//set tab for navigation
-			if (hasExpired){
-				resetTabCookie();
-				returnTab = 0;
-			} else {
-				returnTab = $cookies['navtab'];
-			}
-
-		} else {
-			// Set the cookies
-			resetTabCookie();
-		}
-
-		return returnTab;
-	}
-
-	function setTabNavigation(){
-		try {
-		    //Get current selected tab
-			var startTab = parseInt(determineDefaultTab());
-			$scope.selectedIndex = startTab;
-		}
-		catch(err) {
-		    $scope.selectedIndex = 0;
-		}
-	}
-
-	function resetTabCookie(){
-		setTabCookie(0);
-		setTabCookieExpireDate();
-	}
-
-	function setTabCookie(selected_tab){
-		$cookies.navtab = selected_tab;
-	}
-
-	function setTabCookieExpireDate(){
-		var cookieDate = new Date();
-	  	$cookies.navtabexpire = cookieDate;
-	}
-
-	function showNavigationCookie(value){
-		var cookieDate = new Date();
-		$cookies.showNavigation = value;
-		$cookies.showNavigationExpire = cookieDate;
-	}
-
-	function checkLoginStatus() {
-		if (NavigationService.getLoginStatus() == false) {
-			//Set the scope variable to not show the navigation
-			$scope.showNavigation = false;
-		}
-	}
-
-	function setNavItems () {
-		//$scope.navItems = [
-		//    { type: 'state', route: '/state' },
-		//    { type: 'schedules', route: '/schedules' },
-		//    { type: 'users', route: '/users' },
-		//    { type: 'configuration', route: '/configuration' },
-		//    { type: 'logout', route: '/logout' }
-		//  ];
-
-		// var navTabs = [
-		//     { index: 0, type: 'state', route: '/state' },
-		//     { index: 1, type: 'schedules', route: '/schedules' },
-		//     { index: 2, type: 'users', route: '/users' },
-		//     { index: 3, type: 'configuration', route: '/configuration' },
-		//     { index: 4, type: 'logout', route: '/logout' }
-		//   ];
-
-		$scope.navItems = NavigationService.getNavTabs(); 
-	}
-
-	function logout(){
-		showNavigationCookie(false);
-		resetTabCookie();
-		AuthenticationService.logout($scope.authtoken);
-	}
-
-    function routeNav(type){
-		var route = "";
-
-		if (type == 'state') {
-			route = "/state";
-			setTabCookie(0);
-		} else if (type == 'schedules') {
-			route = "/schedules";
-			setTabCookie(1);
-		} else if (type == 'users') {
-			route = "/users";
-			setTabCookie(2);
-		} else if (type == "configuration") {
-			route = "/configuration";
-			setTabCookie(3);
-		} else if (type == "logout") {
-			logout();
-		}
-
-		if (route != "") {
-			$location.path(route);	
-		}
-		
-	}
-
-	function loggedIn() {
-		// if (NavigationService.getLoginStatus()) {
-		// 	return true;
-		// } else {
-		// 	return false;
-		// }
-		var hasExpired = false;
-		//Check to see if cookie is set to show the navigation
-		if ($cookies['showNavigation']) {
-			// Now check to see if the cookie has expired
-			try {
-				var setCookieExpireDate = new Date($cookies['showNavigationExpire']);
-
-				if (setCookieExpireDate){
-					var fourHours = 3600000;
-					var currentDate = new Date();
-
-					if ((currentDate - setCookieExpireDate) > fourHours) {
-						//This means the date has expired - So reset the cookies
-						hasExpired = true;
-					}
-				}
-			} catch(err) {
-					//Nothing
-			}
-
-			if (hasExpired) {
-				//clear cookies
-				$cookies['showNavigation'] = false;
-				$cookies['showNavigationExpire'] = undefined;
-				return false;
-			} else {
-				//Check show navigation cookie
-				var cookieValue = $cookies['showNavigation'];
-				if (cookieValue === 'true'){
-					return true;
-				} else {
-					return false;
-				}
-			}
-
-		} else {
-			return false;
-		}
-
-	}
-
-	function getSelectedIndex() {
-		return NavigationService.getCurrentTab();
-	}
-
+app.config(function($mdThemingProvider) {
+  var customBlueMap = 		$mdThemingProvider.extendPalette('light-blue', {
+    'contrastDefaultColor': 'light',
+    'contrastDarkColors': ['50'],
+    '50': 'ffffff'
+  });
+  $mdThemingProvider.definePalette('customBlue', customBlueMap);
+  $mdThemingProvider.theme('default')
+    .primaryPalette('customBlue', {
+      'default': '500',
+      'hue-1': '50'
+    })
+    .accentPalette('pink');
+  $mdThemingProvider.theme('input', 'default')
+        .primaryPalette('grey')
 });
 
+app.config(function($mdIconProvider) {
+    $mdIconProvider
+      .iconSet('action', 'images/svg-sprite-action.svg', 24)
+      .iconSet('alert', 'images/svg-sprite-alert.svg', 24)
+      .iconSet('av', 'images/svg-sprite-av.svg', 24)
+      .iconSet('communication', 'images/svg-sprite-communication.svg', 24)
+      .iconSet('content', 'images/svg-sprite-content.svg', 24)
+      .iconSet('device', 'images/svg-sprite-device.svg', 24)
+      .iconSet('editor', 'images/svg-sprite-editor.svg', 24)
+      .iconSet('file', 'images/svg-sprite-file.svg', 24)
+      .iconSet('hardware', 'images/svg-sprite-hardware.svg', 24)
+      .iconSet('image', 'images/svg-sprite-image.svg', 24)
+      .iconSet('maps', 'images/svg-sprite-maps.svg', 24)
+      .iconSet('navigation', 'images/svg-sprite-navigation.svg', 24)
+      .iconSet('notification', 'images/svg-sprite-notification.svg', 24)
+      .iconSet('social', 'images/svg-sprite-social.svg', 24)
+      .iconSet('toggle', 'images/svg-sprite-toggle.svg', 24)
+      .iconSet('avatars', 'images/avatar-icons.svg', 24)
+      .defaultIconSet('images/svg-sprite-action.svg', 24);
 
-
-
-
-
-
-
+});
 
 
 

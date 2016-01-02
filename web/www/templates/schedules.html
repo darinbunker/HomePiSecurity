@@ -1,28 +1,136 @@
 <div ng-controller="ScheduleController as schedules">
 
-  <md-content>
-    <md-list>
-      <md-subheader class="md-no-sticky">Schedules</md-subheader>
-      <md-divider ></md-divider>
-      <div layout="row" layout-align="end center">
-        <md-button ng-click="setCreate($event)" class="md-primary">
-          + Add Schedule
-        </md-button>
+      <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="addNew()">
+        <md-icon md-svg-icon="content:ic_add_24px" aria-label="Plus"></md-icon>
+      </md-button>
+
+      <md-content flex>
+        <ui-view layout="column" layout-fill layout-padding>
+          <div class="inset" hide-sm></div>
+            <ng-switch on="data.selectedIndex" class="tabpanel-container">
+              <div role="tabpanel"
+                   id="tab1-content"
+                   aria-labelledby="tab1"
+                   ng-switch-when="0"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()"
+                   layout="row" layout-align="center center">
+                <div flex-gt-sm="90" flex-gt-md="80">
+                  <h2 class="md-title inset">Current Schedules</h2>
+                  <md-card>
+                    <md-list>
+                      <md-list-item class="md-3-line" ng-repeat="schedule in schedules">
+                        <md-icon class="md-avatar" hide-sm md-svg-icon="/images/day_{{schedule.start_day}}.svg"></md-icon>
+                        <div class="md-list-item-text">
+                          <h3>Start: {{schedule.start_day | schedule_day}} at {{schedule.start_hour}}:{{schedule.start_minute | schedule_minute}}</h3>
+                          <h4>End: {{schedule.end_day | schedule_day}} at {{schedule.end_hour}}:{{schedule.end_minute | schedule_minute}}</h4>
+                          <!-- <p>{{item.notes}}</p> -->
+                          <md-icon md-svg-icon="action:ic_settings_24px" ng-click="configureUpdate(schedule)" aria-label="Modify Schedule" class="md-secondary md-hue-3" ng-class="{'md-primary': person.newMessage}">
+                          </md-icon>
+                        </div>
+                        <md-divider md-inset hide-sm ng-if="!$last"></md-divider>
+                        <md-divider hide-gt-sm ng-if="!$last"></md-divider>
+                      </md-list-item>
+                      <md-divider></md-divider>
+                    </md-list>
+                  </md-card>
+                </div>
+              </div>
+              <div role="tabpanel"
+                   id="tab2-content"
+                   aria-labelledby="tab2"
+                   ng-switch-when="1"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()" 
+                   layout="row" layout-align="center center">
+                <div flex-gt-sm="90" flex-gt-md="80">
+                  <h2 class="md-title inset">Schedule Definition</h2>
+                  <md-card>
+                    <div layout-gt-sm="row" layout-padding>
+                      <md-input-container class="md-block" flex="50">
+                        <label>Select Security Group</label>
+                        <md-select placeholder="Security Group" ng-model="targetSchedule.app_module_id">
+                          <md-option ng-value="app.id" ng-repeat="app in modules">{{app.app_module}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex="50" layout-align="end center">
+                        <!-- <label>Active Schedule</label> -->
+                          <md-switch aria-label="Active" ng-model="targetSchedule.active">
+                            Active
+                          </md-switch>
+                      </md-input-container>
+                    </div>
+                    <div layout-gt-sm="row" layout-padding>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <label>Start Day</label>
+                        <md-select placeholder="start day" ng-model="targetSchedule.start_day">
+                          <md-option ng-value="day.id" ng-repeat="day in daysOfWeek">{{day.dayOfWeek}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <label>Start Hour</label>
+                          <md-select placeholder="start hour" ng-model="targetSchedule.start_hour">
+                            <md-option ng-value="hour.id" ng-repeat="hour in hoursInDay">{{hour.hourInDay}}</md-option>
+                          </md-select>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <label>Start Minute</label>
+                        <md-select placeholder="start minute" ng-model="targetSchedule.start_minute">
+                          <md-option ng-value="minute.id" ng-repeat="minute in minutesInHour">{{minute.minuteInHour}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                    </div>
+                    <div layout-gt-sm="row" layout-padding>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <label>End Day</label>
+                        <md-select placeholder="end day" ng-model="targetSchedule.end_day">
+                          <md-option ng-value="day.id" ng-repeat="day in daysOfWeek">{{day.dayOfWeek}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <label>End Hour</label>
+                        <md-select placeholder="end hour" ng-model="targetSchedule.end_hour">
+                          <md-option ng-value="hour.id" ng-repeat="hour in hoursInDay">{{hour.hourInDay}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <label>End Minute</label>
+                        <md-select placeholder="end minute" ng-model="targetSchedule.end_minute">
+                          <md-option ng-value="minute.id" ng-repeat="minute in minutesInHour">{{minute.minuteInHour}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                    </div>
+                    <div layout-gt-sm="row" layout-padding>
+                      <md-input-container class="md-block" flex="45">
+                        <label>Alert Rule</label>
+                        <md-select placeholder="alert rule" ng-model="targetSchedule.alert_rule_id">
+                          <md-option ng-value="rule.id" ng-repeat="rule in alertRules">{{rule.rule_name}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                    </div>
+
+                    <div class="md-actions" layout="row">
+                      <md-input-container class="md-block" flex-gt-sm layout="row">
+
+                        <md-button class="md-icon-button md-secondary" ng-click="confirmRemove(targetSchedule, $event)" aria-label="Delete">
+                          <md-icon md-svg-icon="images/icons/delete48.svg"></md-icon>
+                        </md-button>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex-gt-sm layout="row" layout-align="end center">
+                        <md-button ng-click="cancel()" class="md-primary">
+                         Cancel
+                        </md-button>
+                        <md-button ng-click="saveSchedule(targetSchedule)" class="md-primary">
+                          Save
+                        </md-button>
+                      </md-input-container>                        
+                    </div>
+
+                  </md-card>
+                </div>
+              </div>
+          </ng-switch>
+        </ui-view>
+      </md-content>
+      <!-- <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a>, <a href="http://www.flaticon.com/authors/elegant-themes" title="Elegant Themes">Elegant Themes</a>, <a href="http://www.flaticon.com/authors/simpleicon" title="SimpleIcon">SimpleIcon</a>, <a href="http://www.flaticon.com/authors/catalin-fertu" title="Catalin Fertu">Catalin Fertu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div> -->
       </div>
-
-      <md-list-item ng-click="toggleModal(schedule, $event)" ng-repeat="schedule in schedules">
-        <img src="images/icons/day_{{schedule.start_day}}.ico" class="md-avatar" />
-        <div class="md-list-item-text">
-          <h4>Start: {{schedule.start_day | schedule_day}} at {{schedule.start_hour}}:{{schedule.start_minute | schedule_minute}}</h4>
-          <h4>End: {{schedule.end_day | schedule_day}} at {{schedule.end_hour}}:{{schedule.end_minute | schedule_minute}}</h4>
-        </div>
-        <md-button class="md-icon-button md-secondary" ng-click="confirmRemove(schedule, $event)" aria-label="Delete">
-          <md-icon md-svg-icon="images/icons/delete48.svg"></md-icon>
-        </md-button>
-      </md-list-item>
-
-      <md-divider ></md-divider>
-    </md-list>
-  </md-content>
-
-</div>

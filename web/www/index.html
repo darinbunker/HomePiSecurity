@@ -1,51 +1,85 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" ng-app="app">
   <head>
-  	<meta charset="UTF-8">
-  	<title>Pi Home Security System</title>
-    <link rel="stylesheet" href="css/angular-material.min.css" />
-    <link rel="stylesheet" href="css/opensans.css" type='text/css'>
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" href="css/app.css" />
-    <link rel="stylesheet" href="css/cssmenu.css" />
-    
-
+    <meta charset="UTF-8">
+    <title>Home Pi Security System</title>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/opensans.css" type='text/css'>
+        <link rel="stylesheet" href="css/app.css" />
+        <link rel="stylesheet" href="css/angular-material.min.css">
   </head>
-  <body layout="column" layout-align="top center">
-    <md-toolbar>
-      <div class="md-toolbar-tools">
-        <span class="md-flex">Pi Security System</span>
-      </div>
-    </md-toolbar>
-    
-    <!--  <div ng-if="showNavigation"> -->
-      <div ng-controller="NavController as navigation">
-        <div ng-if="loggedIn()">
-          <md-content class="md-padding">
-            <!-- <md-tabs md-border-bottom md-selected="getSelectedIndex()"> -->
-            <md-tabs md-selected="selectedIndex" md-border-bottom>
-              <md-tab ng-model="navItems" label="{{}}" ng-repeat="items in navItems" label="{{items.type}}">
-                <span class="span-nav-menu" ng-click="routeNav(items.type)"> 
-                  {{items.type}}
-                </span>
-              </md-tab>
-            </md-tabs>
-          </md-content>
-        </div>
-      </div>
-    <!-- </div> -->
 
-    <div id="view" ng-view></div>
-    
+  <body layout="row" ng-controller="BaseController">
+
+    <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+      <md-toolbar class="md-hue-2">
+        <span flex></span>
+        <div layout="row" layout-align="start center">
+          <md-icon class="md-avatar" md-svg-icon="avatars:svg-1"></md-icon>
+          <span flex></span>
+        </div>
+        <span flex></span>
+        <div class="md-body-1">{{loggedInUser.user_name}}</div>
+      </md-toolbar>
+      <md-list>
+        <md-list-item class="md-2-line" ng-repeat="item in menu" ng-click="navigateAction(item.route)" role="link" md-ink-ripple>
+          <md-icon md-svg-icon="{{item.icon}}" aria-label="{{item.title}}"></md-icon>
+          <div class="md-list-item-text">
+            <span class="md-body-2">{{item.title}}</span>
+          </div>
+        </md-list-item>
+      </md-list>
+    </md-sidenav>
+    <div layout="column" class="relative" layout-fill role="main">
+      <md-toolbar class="animate-show md-tall md-whiteframe-z1" ng-show="!showSearch">
+        <div class="md-toolbar-tools">
+          <md-button class="md-icon-button" ng-click="toggleSidenav('left')" hide-gt-md aria-label="Menu">
+            <md-icon md-svg-icon="navigation:ic_menu_24px" aria-label="Menu"></md-icon>
+          </md-button>
+          <h3>
+            Home Pi Security System
+          </h3>
+          <span flex></span>
+          <md-button class="md-icon-button" aria-label="Logout" ng-click="logout()">
+            <md-icon md-svg-icon="navigation:ic_more_vert_24px" aria-label="More"></md-icon>
+          </md-button>
+        </div>
+        <span flex></span>
+        <!-- <div ng-if="showTabs"> -->
+          <md-tabs md-stretch-tabs="always" md-selected="data.selectedIndex">
+            <md-tab id="tab1" ng-if="showTabs" aria-controls="tab1-content">
+              Status
+            </md-tab>
+            <md-tab id="tab2" ng-if="showTabs" aria-controls="tab2-content">
+              Details
+            </md-tab>
+          </md-tabs>
+        <!-- </div> -->
+      </md-toolbar>
+      <md-toolbar ng-show="showSearch" class="animate-show md-hue-1 md-whiteframe-z1">
+        <div class="md-toolbar-tools">
+          <md-button class="md-icon-button" ng-click="toggleSearch()" aria-label="Menu">
+            <md-icon md-svg-icon="navigation:ic_arrow_back_24px" aria-label="Back"></md-icon>
+          </md-button>
+          <h3 role="button" ng-click="toggleSearch()">
+            Back
+          </h3>
+          <span flex="5"></span>
+        </div>
+      </md-toolbar>
+      <div id="view" class="ng-view"></div>
+    </div>
+
+    <!-- Angular Dependencies -->
     <script src="js/angular.js"></script>
     <script src="js/angular-route.js"></script>
     <script src="js/angular-animate.min.js"></script>
     <script src="js/angular-aria.min.js"></script>
-    <script src="js/angular-material.min.js"></script>
     <script src="js/angular-cookies.min.js"></script>
+    <script src="js/angular-material.min.js"></script>    
+    <!-- App Script Files -->
     <script src="js/config.js"></script>
     <script src="js/app.js"></script>
-    
+
   </body>
 </html>

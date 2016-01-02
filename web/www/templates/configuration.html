@@ -1,18 +1,6 @@
 <div ng-controller="ConfigurationController as configurations">
 
-  <!--
-  <div id='cssmenu'>
-    <ul>
-       <li><a ng-click="routeNav('state')"><span>State</span></a></li>
-       <li><a ng-click="routeNav('schedules')"><span>Schedules</span></a></li>
-       <li><a ng-click="routeNav('users')"><span>Users</span></a></li>
-       <li class='active'><a href='#'><span>Configuration</span></a></li>
-       <li class='last'><a ng-click="logout()"><span>Logout</span></a></li>
-    </ul>
-  </div>
-  -->
-
-  <md-content ng-repeat="items in state">
+  <!-- <md-content ng-repeat="items in state">
     <md-toolbar class="md-theme-light">
       <h2 class="md-toolbar-tools">
         <span>Alert Rules - {{items.app_module}}</span>
@@ -40,7 +28,66 @@
         </md-list-item>
       </md-list>
     </md-content>
-  </md-content>
+  </md-content> -->
+
+
+  <md-content flex>
+        <ui-view layout="column" layout-fill layout-padding>
+          <div class="inset" hide-sm></div>
+            <ng-switch on="data.selectedIndex" class="tabpanel-container">
+              <div role="tabpanel"
+                   id="tab1-content"
+                   aria-labelledby="tab1"
+                   ng-switch-when="0"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()"
+                   layout="column" layout-align="center center">
+                <div flex="100" flex-gt-sm="90" flex-gt-md="80" ng-repeat="items in state">
+                  <h2 class="md-title inset">Alert Rules - {{items.app_module}}</h2>
+                  <md-card>
+                    <md-input-container class="md-block">
+                      <label>Override Alert Rule</label>
+                      <md-select placeholder="Choose Override Alert Rule" ng-change="updateAlerts(items)" ng-model="items.override_alert_rule">
+                        <md-option ng-value="rule.id" ng-repeat="rule in alertRules">{{rule.rule_name}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                      <label>Override Alert Rule</label>
+                      <md-select placeholder="Choose General Alert Rule" ng-change="updateAlerts(items)" ng-model="items.general_alert_rule">
+                        <md-option ng-value="rule.id" ng-repeat="rule in alertRules">{{rule.rule_name}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                  </md-card>
+                </div>
+              </div>
+              <div role="tabpanel"
+                   id="tab2-content"
+                   aria-labelledby="tab2"
+                   ng-switch-when="1"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()" 
+                   layout="column" layout-align="center center">
+                <div flex="100" flex-gt-sm="90" flex-gt-md="80" ng-repeat="items in state">
+                  <h2 class="md-title inset">Alert Rules - {{items.app_module}}</h2>
+                  <md-card>
+                    <md-input-container class="md-block">
+                      <label>Override Alert Rule</label>
+                      <md-select placeholder="Choose Override Alert Rule" ng-change="updateAlerts(items)" ng-model="items.override_alert_rule">
+                        <md-option ng-value="rule.id" ng-repeat="rule in alertRules">{{rule.rule_name}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                      <label>Override Alert Rule</label>
+                      <md-select placeholder="Choose General Alert Rule" ng-change="updateAlerts(items)" ng-model="items.general_alert_rule">
+                        <md-option ng-value="rule.id" ng-repeat="rule in alertRules">{{rule.rule_name}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                  </md-card>
+                </div>
+              </div>
+          </ng-switch>
+        </ui-view>
+      </md-content>
 
 
 </div>

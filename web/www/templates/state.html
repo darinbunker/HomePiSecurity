@@ -1,34 +1,71 @@
 <div ng-controller="StateController as states">
-  <md-toolbar class="md-theme-light">
-    <h2 class="md-toolbar-tools">
-      <span>Security System Status</span>
-    </h2>
-  </md-toolbar>
-  <md-content>
-    <md-list>
-      <md-list-item class="md-3-line" layout="row" layout-align="center center" ng-repeat="state in states">
-        <div layout="column" layout-align="center center">
-          <div class="md-list-item-text">
-            <h3>Current System Status: {{state.armedDisplay}}</h3>
-            <h4>Last System Change Date: {{state.lastChangeDate | date: 'MM-dd-yyyy - h:mm a'}}</h4>
-            <p ng-if="state.armed == 'arm-hold'">Armed based permanent hold.</p>
-            <p ng-if="state.armed == 'arm-temp'">Armed temporarily.  Will reset upon next schedule.</p>
-            <p ng-if="state.armed == 'arm-schedule'">Armed based on schedule: Schedule ID - {{state.active_schedule}}</p>
-          </div>
-          <div class="state-actions" layout="row" layout-align="center center">
-            <md-button ng-if="state.armed != 'arm-temp'" class="md-primary md-raised" ng-click="setArmed(state,2)" flex flex-md="100">
-              Arm Temp
-            </md-button>
-            <md-button ng-if="state.armed != 'not-armed'" class="md-primary md-raised" ng-click="setArmed(state,0)" flex flex-md="100">
-              Disarm
-            </md-button>
-            <md-button ng-if="state.armed != 'arm-hold'" class="md-primary md-raised" ng-click="setArmed(state,1)" flex flex-md="100">
-              Arm & Hold
-            </md-button>
-          </div>
-        </div>
-        <md-divider></md-divider>
-      </md-list-item>
-    </md-list>
-  </md-content>
-</div>
+
+      <md-content flex>
+        <ui-view layout="column" layout-fill layout-padding>
+          <div class="inset" hide-sm></div>
+            <ng-switch on="data.selectedIndex" class="tabpanel-container">
+              <div role="tabpanel"
+                   id="tab1-content"
+                   aria-labelledby="tab1"
+                   ng-switch-when="0"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()"
+                   layout="row" layout-align="center center">
+                <div flex-gt-sm="90" flex-gt-md="80">
+                  <h2 class="md-title inset">Current System Status</h2>
+                  <md-card>
+                    <md-list>
+                      <md-list-item class="md-3-line" ng-repeat="state in states">
+                        <md-icon class="md-avatar" ng-if="state.armed != 'not-armed'" hide-sm md-svg-icon="action:ic_lock_outline_24px"></md-icon>
+                        <md-icon class="md-avatar" ng-if="state.armed != 'arm-temp' && state.armed !='arm-hold'" hide-sm md-svg-icon="action:ic_lock_open_24px"></md-icon>
+                        <div class="md-list-item-text">
+                          <h3>Security Area: {{state.app_module}}</h3>
+                          <h4>Current State: {{state.armedDisplay}}</h4>
+                          <p>Last Update: {{state.lastChangeDate | date: 'MM-dd-yyyy - h:mm a'}}</p>
+                        </div>
+                      
+                        <md-button class="md-secondary md-hue-3 md-raised" ng-if="state.armed != 'arm-temp' && state.armed !='arm-hold'" ng-click="setArmed(state,2)">Arm</md-button>
+                        <md-button class="md-secondary md-hue-3 md-raised" ng-if="state.armed != 'not-armed'" ng-click="setArmed(state,0)">Disarm</md-button>
+                        
+                        <md-divider md-inset hide-sm ng-if="!$last"></md-divider>
+                        <md-divider hide-gt-sm ng-if="!$last"></md-divider>
+
+                      </md-list-item>
+
+                    </md-list>
+                  </md-card>
+                </div>
+              </div>
+              <div role="tabpanel"
+                   id="tab2-content"
+                   aria-labelledby="tab2"
+                   ng-switch-when="1"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()" 
+                   layout="row" layout-align="center center">
+                <div flex-gt-sm="90" flex-gt-md="80">
+                  <h2 class="md-title inset">System Status - Arm & Hold</h2>
+                  <md-card>
+                    <md-list>
+                      <md-list-item class="md-3-line" ng-repeat="state in states">
+                        <md-icon class="md-avatar" ng-if="state.armed != 'not-armed'" hide-sm md-svg-icon="action:ic_lock_outline_24px"></md-icon>
+                        <md-icon class="md-avatar" ng-if="state.armed != 'arm-temp' && state.armed !='arm-hold'" hide-sm md-svg-icon="action:ic_lock_open_24px"></md-icon>
+                        <div class="md-list-item-text">
+                          <h3>Security Area: {{state.app_module}}</h3>
+                          <h4>Current State: {{state.armedDisplay}}</h4>
+                          <p>Last Update: {{state.lastChangeDate | date: 'MM-dd-yyyy - h:mm a'}}</p>
+                        </div>
+                        <md-button class="md-secondary md-raised" ng-if="state.armed != 'arm-hold'" ng-click="setArmed(state,1)">Arm & Hold</md-button>
+                        <md-button class="md-secondary md-raised" ng-if="state.armed != 'not-armed'" ng-click="setArmed(state,0)">Disarm</md-button>
+                        
+                        <md-divider md-inset hide-sm ng-if="!$last"></md-divider>
+                        <md-divider hide-gt-sm ng-if="!$last"></md-divider>
+                      </md-list-item>
+                    </md-list>
+                  </md-card>
+                </div>
+              </div>
+          </ng-switch>
+        </ui-view>
+      </md-content>
+      </div>

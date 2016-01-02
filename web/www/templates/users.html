@@ -1,27 +1,128 @@
 <div ng-controller="UserController as users">
+      
+      <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="addNew()">
+        <md-icon md-svg-icon="content:ic_add_24px" aria-label="Plus"></md-icon>
+      </md-button>
 
-  <md-content>
-    <md-list>
-      <md-subheader class="md-no-sticky">Users</md-subheader>
-      <md-divider ></md-divider>
-      <div layout="row" layout-align="end center">
-        <md-button ng-click="setCreate($event)" class="md-primary">
-          + Add User
-        </md-button>
-      </div>
+      <md-content flex>
+        <ui-view layout="column" layout-fill layout-padding>
+          <div class="inset" hide-sm></div>
+            <ng-switch on="data.selectedIndex" class="tabpanel-container">
+              <div role="tabpanel"
+                   id="tab1-content"
+                   aria-labelledby="tab1"
+                   ng-switch-when="0"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()"
+                   layout="row" layout-align="center center">
+                <div flex-gt-sm="90" flex-gt-md="80">
+                  <h2 class="md-title inset">Users</h2>
+                  <md-card>
+                    <md-list>
+                      <md-list-item class="md-3-line" ng-repeat="user in users">
+                        <md-icon class="md-avatar" hide-sm md-svg-icon="avatars:svg-1"></md-icon>
+                        <div class="md-list-item-text">
+                          <h3>Username: {{user.user_name}}</h3>
+                          <h4>Contact Number: {{user.sms_number}}</h4>
+                          <p>Active: {{user.active}}</p>
+                          <md-icon md-svg-icon="action:ic_settings_24px" ng-click="configureUpdate(user)" aria-label="Modify User" class="md-secondary md-hue-3" ng-class="{'md-primary': person.newMessage}">
+                          </md-icon>
+                        </div>
+                        <md-divider md-inset hide-sm ng-if="!$last"></md-divider>
+                        <md-divider hide-gt-sm ng-if="!$last"></md-divider>
+                      </md-list-item>
+                    </md-list>
+                  </md-card>
+                </div>
+              </div>
+              <div role="tabpanel"
+                   id="tab2-content"
+                   aria-labelledby="tab2"
+                   ng-switch-when="1"
+                   md-swipe-left="next()"
+                   md-swipe-right="previous()" 
+                   layout="row" layout-align="center center">
+                <div flex-gt-sm="90" flex-gt-md="80">
+                  <h2 class="md-title inset">Update User</h2>
+                  <div ng-if="showMessage">
+                    <h2>{{displayMessage}}</h2>
+                  </div>
+                  <!-- <md-card>
+                    <md-list>
+                      <md-list-item class="md-3-line" ng-repeat="user in users">
+                        <md-icon class="md-avatar" hide-sm md-svg-icon="avatars:svg-2"></md-icon>
+                        <div class="md-list-item-text">
+                          <h3>Username: {{user.user_name}}</h3>
+                          <h4>Contact Number: {{user.sms_number}}</h4>
+                          <p>Active: {{user.active}}</p>
+                        </div>
+                        <md-divider md-inset hide-sm ng-if="!$last"></md-divider>
+                        <md-divider hide-gt-sm ng-if="!$last"></md-divider>
+                      </md-list-item>
+                    </md-list>
+                  </md-card> -->
+                  <md-card>
+                    <div layout-gt-sm="row" layout-padding>
+                      <md-input-container class="md-block" flex="50">
+                        <label>Username</label>
+                        <input name="username" required ng-model="targetUser.user_name">
+                      </md-input-container>
+                      <md-input-container class="md-block" flex="50" layout-align="end center">
+                          <md-switch aria-label="Active" ng-model="targetUser.active">
+                            Active
+                          </md-switch>
+                      </md-input-container>
+                    </div>
+                    <div layout-gt-sm="row" layout-padding>
+                      <md-input-container class="md-block" flex="50">
+                        <label>SMS Phone Number</label>
+                        <input name="smsnumber" required ng-model="targetUser.sms_number">
+                      </md-input-container>
+                    </div>
+                    <div layout-gt-sm="row" layout-padding>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <md-checkbox ng-model="targetUser.send_email" aria-label="sendEmail">
+                          Send Email 
+                        </md-checkbox>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <md-checkbox ng-model="targetUser.send_sms" aria-label="sendSms">
+                          Send SMS 
+                        </md-checkbox>
+                      </md-input-container>
+                    </div>
+                    <div layout-gt-sm="row" layout-padding>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <label>Password</label>
+                        <input type="password" ng-model="targetUser.firstPassword">
+                      </md-input-container>
+                      <md-input-container class="md-block" flex-gt-sm>
+                        <label>Confirm Password</label>
+                        <input type="password" ng-model="targetUser.secondPassword">
+                      </md-input-container>
+                    </div>
+                    
+                    <div class="md-actions" layout="row">
+                      <md-input-container class="md-block" flex-gt-sm layout="row">
+                        <md-button class="md-icon-button md-secondary" ng-click="confirmRemove(targetUser, $event)" aria-label="Delete">
+                          <md-icon md-svg-icon="images/icons/delete48.svg"></md-icon>
+                        </md-button>
+                      </md-input-container>
+                      <md-input-container class="md-block" flex-gt-sm layout="row" layout-align="end center">
+                        <md-button ng-click="cancel()" class="md-primary">
+                         Cancel
+                        </md-button>
+                        <md-button ng-click="saveUser(targetUser)" class="md-primary">
+                          Save
+                        </md-button>
+                      </md-input-container>                        
+                    </div>
 
-      <md-list-item ng-click="toggleModal(user, $event)" ng-repeat="user in users">
-        <div class="md-list-item-text">
-          <h4>Username: {{user.user_name}}</h4>
-          <h4>Contact Number: {{user.sms_number}}</h4>
-        </div>
-        <md-button class="md-icon-button md-secondary" ng-click="confirmRemove(user, $event)" aria-label="Delete">
-          <md-icon md-svg-icon="images/icons/delete48.svg"></md-icon>
-        </md-button>
-      </md-list-item>
+                  </md-card>
 
-      <md-divider ></md-divider>
-    </md-list>
-  </md-content>
-
+                </div>
+              </div>
+          </ng-switch>
+        </ui-view>
+      </md-content>
 </div>
