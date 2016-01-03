@@ -81,12 +81,21 @@ The installation process will walk through installing the pre-requisites, config
       * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword >> install.log`
         * An error might occur (-bash: install.log: Permission denied) if you are not able to write to install.log directory.  You can change the output to /home/pi/install.log if needed.
     * Approximate install time is between 15-20
-    * You can test the installation by navigating to the following URLs from a web browser (since the configured SSL uses a self-signed certificate you will need to bypass the browser security) :
-      * `https://[HomePiSecurity IP Address]` - You should see a login in screen
-      * `https://[HomePiSecurity IP Address]:8443/state` - You should get a response with item:value pairs
 1. Configure static IP address for Home Pi Security System
   * The web configuration requires the location (IP Address) of the Home Pi Security service for continual communication.  
     * If the IP address of the Home Pi Security system does need to be changed then an update will be required in the config.js file of the web settings. 
+1. Enable trust for self-signed certificates for the web and REST service
+  * The best way to immediately trust the self-signed certificates is to attempt to access the URLs via a web broswer
+    * Web: `https://[HomePiSecurity IP Address]` - On Chrome you click on "Proceed to [IP Address](UNSAFE)" link
+    * REST Service: `https://[HomePiSecurity IP Address]:8443/state` - On Chrome you click on "Proceed Unsafe" link
+1. Login to web interface
+  * In a browser go to the following URL:
+    * `https://[HomePiSecurity IP Address]`
+      * Use email address: admin@admin.io
+      * Use password: 123456
+  * You can test the installation by navigating to the following URLs from a web browser (since the configured SSL uses a self-signed certificate you will need to bypass the browser security)
+      * `https://[HomePiSecurity IP Address]:8443/state` - You should get a response with item:value pairs
+      * `https://[HomePiSecurity IP Address]` - You should see a login in screen
 1. Obtain settings values:
   * To use SMS you will need to create an account from Twilio and get the following:
     * Account_SID
