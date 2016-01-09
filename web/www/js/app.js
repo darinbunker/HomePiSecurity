@@ -258,30 +258,33 @@ app.controller('StateController', function($scope, $http, $location, $cookies){
       //Check the state object to determine the armed state - Loop through the state objects
 
       for (var i = 0; i < $scope.states.length; i++) {
-        var armType = "";
+        //var armType = "";
           // - First check if the active_override is set
           $scope.states[i].armed = "not-armed";
           if ($scope.states[i].active_override == 1){
             $scope.states[i].armedDisplay = "ARMED & HOLD";
-            armType = "arm-hold";
+            //armType = "arm-hold";
+            $scope.states[i].armed = "arm-hold";
           } else if ($scope.states[i].active_override == 2) {
             $scope.states[i].armedDisplay = "ARMED";
-            armType = "arm-temp";
+            //armType = "arm-temp";
+            $scope.states[i].armed = "arm-temp";
           } else if ($scope.states[i].active_schedule > 0) {
             // Check to make sure there isn't a deactivate set
             if ($scope.states[i].deactivate_override > 0){
               $scope.states[i].armedDisplay = "DISARMED";
             } else {
               $scope.states[i].armedDisplay = "ARMED";
-              armType = "arm-schedule";
+              //armType = "arm-schedule";
+              $scope.states[i].armed = "arm-schedule";
             }
           } else {
             $scope.states[i].armedDisplay = "DISARMED";
           }
 
-          if (armType){
-            $scope.states[i].armed = armType;
-          }
+          // if (armType){
+          //   $scope.states[i].armed = armType;
+          // }
       }
     }
 
