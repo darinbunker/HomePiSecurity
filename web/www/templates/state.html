@@ -17,14 +17,14 @@
                     <md-list>
                       <md-list-item class="md-3-line" ng-repeat="state in states">
                         <md-icon class="md-avatar" ng-if="state.armed != 'not-armed'" hide-sm md-svg-icon="action:ic_lock_outline_24px"></md-icon>
-                        <md-icon class="md-avatar" ng-if="state.armed = 'not-armed'" hide-sm md-svg-icon="action:ic_lock_open_24px"></md-icon>
+                        <md-icon class="md-avatar" ng-if="state.armed == 'not-armed'" hide-sm md-svg-icon="action:ic_lock_open_24px"></md-icon>
                         <div class="md-list-item-text">
                           <h3>Security Area: {{state.app_module}}</h3>
                           <h4>Current State: {{state.armedDisplay}}</h4>
                           <p>Last Update: {{state.lastChangeDate | date: 'MM-dd-yyyy - h:mm a'}}</p>
                         </div>
                       
-                        <md-button class="md-secondary md-hue-3 md-raised" ng-if="state.armed = 'not-armed'" ng-click="setArmed(state,2)">Arm</md-button>
+                        <md-button class="md-secondary md-hue-3 md-raised" ng-if="state.armed == 'not-armed'" ng-click="setArmed(state,2)">Arm</md-button>
                         <md-button class="md-secondary md-hue-3 md-raised" ng-if="state.armed != 'not-armed'" ng-click="setArmed(state,0)">Disarm</md-button>
                         
                         <md-divider md-inset hide-sm ng-if="!$last"></md-divider>
@@ -49,13 +49,13 @@
                     <md-list>
                       <md-list-item class="md-3-line" ng-repeat="state in states">
                         <md-icon class="md-avatar" ng-if="state.armed != 'not-armed'" hide-sm md-svg-icon="action:ic_lock_outline_24px"></md-icon>
-                        <md-icon class="md-avatar" ng-if="state.armed = 'not-armed'" hide-sm md-svg-icon="action:ic_lock_open_24px"></md-icon>
+                        <md-icon class="md-avatar" ng-if="state.armed == 'not-armed'" hide-sm md-svg-icon="action:ic_lock_open_24px"></md-icon>
                         <div class="md-list-item-text">
                           <h3>Security Area: {{state.app_module}}</h3>
                           <h4>Current State: {{state.armedDisplay}}</h4>
                           <p>Last Update: {{state.lastChangeDate | date: 'MM-dd-yyyy - h:mm a'}}</p>
                         </div>
-                        <md-button class="md-secondary md-raised" ng-if="state.armed = 'not-armed'" ng-click="setArmed(state,1)">Arm & Hold</md-button>
+                        <md-button class="md-secondary md-raised" ng-if="state.armed == 'not-armed'" ng-click="setArmed(state,1)">Arm & Hold</md-button>
                         <md-button class="md-secondary md-raised" ng-if="state.armed != 'not-armed'" ng-click="setArmed(state,0)">Disarm</md-button>
                         
                         <md-divider md-inset hide-sm ng-if="!$last"></md-divider>
