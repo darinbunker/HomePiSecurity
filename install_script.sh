@@ -117,25 +117,18 @@ sudo service apache2 restart
 printf "** Executing: sudo /etc/init.d/apache2 restart \n"
 sudo /etc/init.d/apache2 restart
 ## Generate the certificate and copy it to configured location
-# sudo sh /apps/HomePiSecurity/create_cert.sh homepisecurity
 printf "** Executing: sudo sh $installdir/install/cert/create_cert.sh homepisecurity $keyPassword \n"
 sudo sh $installdir/install/cert/create_cert.sh homepisecurity $keyPassword
 printf "** Executing: sudo mkdir /etc/apache2/ssl \n"
 sudo mkdir /etc/apache2/ssl
-#sudo cp ./homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem
 printf "** Executing: sudo cp $installdir/install/cert/homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem \n"
 sudo cp $installdir/install/cert/homepisecurity.crt /etc/apache2/ssl/homepisecurity.pem
-#sudo cp ./homepisecurity.key /etc/apache2/ssl/homepisecurity.key
 printf "** Executing: sudo cp $installdir/install/cert/homepisecurity.key /etc/apache2/ssl/homepisecurity.key \n"
 sudo cp $installdir/install/cert/homepisecurity.key /etc/apache2/ssl/homepisecurity.key
-#sudo cp ./homepisecurity.p12 /etc/apache2/ssl/homepisecurity.p12
-printf "** Executing: sudo cp $installdir/install/cert/homepisecurity.p12 /etc/apache2/ssl/homepisecurity.p12 \n"
-sudo cp $installdir/install/cert/homepisecurity.p12 /etc/apache2/ssl/homepisecurity.p12
-printf "** Executing: sudo cp $installdir/install/cert/homepisecurity.p12 $installdir/service/latest/homepisecurity.p12 \n"
-sudo cp $installdir/install/cert/homepisecurity.p12 $installdir/service/latest/homepisecurity.p12
+printf "** Executing: sudo cp $installdir/install/cert/homepisecurity.jks $installdir/service/latest/homepisecurity.jks \n"
+sudo cp $installdir/install/cert/homepisecurity.jks $installdir/service/latest/homepisecurity.jks
 printf "** Executing: sudo chmod 600 /etc/apache2/ssl/homepisecurity.key \n"
 sudo chmod 600 /etc/apache2/ssl/homepisecurity.key
-
 printf "** Executing: sudo /etc/init.d/apache2 restart \n"
 sudo /etc/init.d/apache2 restart
 

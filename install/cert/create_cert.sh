@@ -73,7 +73,14 @@ openssl x509 -req -days 3650 -in $installdir/$DOMAIN.csr -signkey $installdir/$D
 fail_if_error $?
 
 # Generate the keystore for Tomcat
+# First need to extract a keystore to be imported into keytool
+sudo openssl pkcs12 -export -name piservicekeystore -in $installdir/$DOMAIN.crt -inkey $installdir/$DOMAIN.key -out $installdir/$DOMAIN.p12 -passout pass:$inputKey
 #openssl pkcs12 -export -in $DOMAIN.crt -inkey $DOMAIN.key -out $DOMAIN.p12 -name piKeystore -CAfile $DOMAIN.crt -caname root -chain -password pass:P@Se3u1tyL02k
-sudo keytool -genkeypair -alias homepikeystore -dname "$subj_keystore" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore $installdir/homepisecurity.p12 -storepass $inputKey -validity 3650
+#sudo keytool -genkeypair -alias homepikeystore -dname "$subj_keystore" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore $installdir/homepisecurity.p12 -storepass $inputKey -validity 3650
+# Convert the p12 into a keystore
+sudo keytool -importkeystore -destkeystore $installdir/$DOMAIN.jks -srckeystore $installdir/$DOMAIN.p12 -srcstoretype pkcs12 -srcstorepass $inputKey -deststorepass $inputKey -alias piservicekeystore
+
+# Export Certificate from keystore
+# sudo keytool -exportcert -alias homepisecurity -file homepisecurity_keystore.crt -keystore homepisecurity.p12 -storetype pkcs12
 
 fail_if_error $?
