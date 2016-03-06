@@ -129,6 +129,11 @@ printf "** Executing: sudo cp $installdir/install/cert/homepisecurity.jks $insta
 sudo cp $installdir/install/cert/homepisecurity.jks $installdir/service/latest/homepisecurity.jks
 printf "** Executing: sudo chmod 600 /etc/apache2/ssl/homepisecurity.key \n"
 sudo chmod 600 /etc/apache2/ssl/homepisecurity.key
+## Make cert available for validation for endpoints
+printf "** Executing: sudo mkdir $installdir/web/www/public/certs \n"
+sudo mkdir $installdir/web/www/public/certs
+printf "** Executing: sudo cp $installdir/install/cert/homepisecurity.crt $installdir/web/www/public/certs/homepisecurity.crt \n"
+sudo cp $installdir/install/cert/homepisecurity.crt $installdir/web/www/public/certs/homepisecurity.crt
 printf "** Executing: sudo /etc/init.d/apache2 restart \n"
 sudo /etc/init.d/apache2 restart
 
