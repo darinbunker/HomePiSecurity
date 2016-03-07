@@ -76,7 +76,7 @@ The installation process will walk through installing the pre-requisites, config
       * `sudo apt-get upgrade -y --force-yes -qq`
     * or you can execute a script provided `sudo sh /apps/HomePiSecurity/install/update_system_script.sh`
 1. Execute the install script
-  * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh >> install.log`
+  * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh >> /home/pi/install.log`
     * Optionally, you can provide a unique password to be used for the MySQL installation (default password is "TheMySQLPass!")
       * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword >> /home/pi/install.log`
         * An error might occur (-bash: install.log: Permission denied) if you are not able to write to install.log directory.  You can change the output to /home/pi/install.log if needed.
