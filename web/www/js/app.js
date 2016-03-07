@@ -11,6 +11,7 @@ var app = angular.module('app', ['ngRoute', 'ngMaterial', 'ngCookies']).config(f
     });
     $routeProvider.when('/configuration', {
       templateUrl: 'templates/configuration.html'
+      //resolve: {}
     });
     $routeProvider.otherwise({ redirectTo : '/state' });
 
@@ -51,6 +52,8 @@ var app = angular.module('app', ['ngRoute', 'ngMaterial', 'ngCookies']).config(f
               return returnVal;
           };
       });
+
+    //use an abstract base route
 
     var $window = $windowProvider.$get();
     var $cookies = $cookiesProvider.$get();
