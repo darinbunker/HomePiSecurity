@@ -78,7 +78,7 @@ The installation process will walk through installing the pre-requisites, config
 1. Execute the install script
   * Execute: `sudo sh /apps/HomePiSecurity/install_script.sh >> install.log`
     * Optionally, you can provide a unique password to be used for the MySQL installation (default password is "TheMySQLPass!")
-      * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword >> install.log`
+      * `sudo sh /apps/HomePiSecurity/install_script.sh MyPassword >> /home/pi/install.log`
         * An error might occur (-bash: install.log: Permission denied) if you are not able to write to install.log directory.  You can change the output to /home/pi/install.log if needed.
     * Approximate install time is between 15-20
 1. Configure static IP address for Home Pi Security System
