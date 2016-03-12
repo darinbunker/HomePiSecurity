@@ -195,16 +195,26 @@ sudo sed -i "s:SetServicePathVariable:$serverAddress:g" $installdir/web/www/js/c
 printf "** Executing: sudo sed -i s:SetServicePortVariable:$serverPort:g $installdir/web/www/js/config.js \n"
 sudo sed -i "s:SetServicePortVariable:$serverPort:g" $installdir/web/www/js/config.js
 # Disable the existing default website
-printf "** Executing: sudo a2dissite default \n"
-sudo a2dissite default
-printf "** Executing: sudo a2dissite default-ssl \n"
-sudo a2dissite default-ssl
-printf "** Executing: sudo rm /etc/apache2/sites-enabled/default-ssl \n"
-sudo rm /etc/apache2/sites-enabled/default-ssl
+
+printf "** Disable all configured sites in apache \n"
+for file in /etc/apache2/sites-enabled/*.conf
+do
+ val=$(echo "$file" | cut -d '/' -f5)
+ site=$(echo "$val" | cut -d '.' -f1)
+ printf "*** Disabling site: $site \n"
+ sudo a2dissite "$site"
+done
+
+# printf "** Executing: sudo a2dissite default \n"
+# sudo a2dissite default
+# printf "** Executing: sudo a2dissite default-ssl \n"
+# sudo a2dissite default-ssl
+# printf "** Executing: sudo rm /etc/apache2/sites-enabled/default-ssl \n"
+# sudo rm /etc/apache2/sites-enabled/default-ssl
 
 # Enable the HomePiSecuritySite
-printf "** Executing: sudo a2ensite homepimanage.conf \n"
-sudo a2ensite homepimanage.conf
+# printf "** Executing: sudo a2ensite homepimanage.conf \n"
+# sudo a2ensite homepimanage.conf
 printf "** Executing: sudo a2ensite homepimanage-ssl.conf \n"
 sudo a2ensite homepimanage-ssl.conf 
 # Reload the service
