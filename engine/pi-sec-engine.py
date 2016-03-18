@@ -776,18 +776,29 @@ def sendAlertMessage(outMessage, alert_rule):
 			if (alertRules[i].id == alert_rule):
 				# This rule is now applied to notifications to users
 				# First sound Siren
-				if (alertRules[i].send_siren):		
-					soundSiren()
 
-				if (alertRules[i].send_email):
-					for i in range(len(userList)):	
-						if (userList[i].send_email):
-							sendEmail(outMessage, userList[i].name)
+				try:
+					if (alertRules[i].send_siren):		
+						soundSiren()
+				except Exception as e:
+					logMessage("method: sendAlertMessage - soundSiren - Error occurred: " + str(e.__doc__) + ": " + str(e.message))
 
-				if (alertRules[i].send_sms):
-					for i in range(len(userList)):
-						if (userList[i].send_sms):
-							sendSMS(outMessage, userList[i].name, userList[i].sms_number)
+				try:
+					if (alertRules[i].send_email):
+						for i in range(len(userList)):	
+							if (userList[i].send_email):
+								sendEmail(outMessage, userList[i].name)
+				except Exception as e:
+					logMessage("method: sendAlertMessage - sendEmail - Error occurred: " + str(e.__doc__) + ": " + str(e.message))
+
+					
+				try:
+					if (alertRules[i].send_sms):
+						for i in range(len(userList)):
+							if (userList[i].send_sms):
+								sendSMS(outMessage, userList[i].name, userList[i].sms_number)
+				except Exception as e:
+					logMessage("method: sendAlertMessage - sendSMS - Error occurred: " + str(e.__doc__) + ": " + str(e.message))
 
 				break
 
